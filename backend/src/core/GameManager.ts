@@ -150,11 +150,10 @@ export class GameManager {
                             currGame.Players[i].cards = shuffledCardsArr.playerArrays[i];
                             currGame.remainingCards=shuffledCardsArr.remainingElements;
                             currGame.Jockey=getJockey(currGame.remainingCards)
-                            // console.log(`inside start ${currGame.remainingCards}`);
-                            // console.log(`players after start${currGame.Players}`)
+                            currGame.board.leftOutCards=shuffledCardsArr.remainingElements;
                             currGame.Players[i].send(JSON.stringify({
                                 msg: `Your cards: ${JSON.stringify(currGame.Players[i].cards)}`,
-                                remainingCards:`remaining Cards : ${JSON.stringify(currGame.remainingCards)}`,
+                                remainingCards:`remaining Cards : ${JSON.stringify(currGame.board.leftOutCards)}`,
                                 Jockey:`the Jockey of The Game ${currGame.Jockey}`
                             }));
 
@@ -162,6 +161,17 @@ export class GameManager {
                     }
                 }
             }
+
+            if(messageData.type==='takefromrem'){
+
+            }
+            if(messageData.type==='takefromgb'){
+
+            }
+            if(messageData.type==='showSet'){
+
+            }
+            
         });
     }
 
