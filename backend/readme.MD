@@ -18,7 +18,7 @@ game rules-- except the last card all are for the game ..
     
     how are sets declared valid --
 
-            1. the set has cards that are sequentially one after another and has the length>=3 
+            1. the set has cards that are sequentially one after another ex-['A',2,3,4] not ['A',3,4] and has the length>=3  {there should be any gap} 
             2. the set has cards that are same ex.[3,3,3],[K,K,K],[A,A,A,A] and has the length>=3
 
     other ways--  players can put cards to other players set that are either sequentially valid or the same as the set's cards 
@@ -64,3 +64,6 @@ game rules-- except the last card all are for the game ..
 
 
      how do i make the game end and again do the whole process ....
+
+how do i make sure players are moving one after another ..noOne moving twice or more back to back 
+and whenever the remaining cards are empty do i shuffle the given_back cards before assiginig to the remaining cards >> 
