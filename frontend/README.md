@@ -35,3 +35,8 @@ onMount get a socket instance and then connect and return () would be onClose>>
 using button client1 sending a data to the server and then the server listens to the message and send another message to the clients that are connected except the one the message came from..for example client 2 recieves the message and that message pushes the message to the array of messages and then simply just map the messages there 
 
 useEffect -- inside this a instance/object  of websocket is created and then set as the socket state and then just listen on to some messages ..onopen,onclose,onerror,onmessage .... 
+
+
+points >> 
+
+1 make the cards more centralized --> make the Valid_Sets closer to the players div --> then write the logic  

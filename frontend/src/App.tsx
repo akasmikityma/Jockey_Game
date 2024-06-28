@@ -1,60 +1,41 @@
-import React, { useEffect, useState } from 'react';
-
-const url = "ws://localhost:8080";
-
-const App = () => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
-  const [inputMessage, setInputMessage] = useState<string>('');
-
-  useEffect(() => {
-    const ws = new WebSocket(url);
-    setSocket(ws);
-
-    ws.onopen = () => {
-      console.log("WebSocket is connected");
-    };
-    ws.onclose = () => {
-      console.log("WebSocket is disconnected");
-    };
-
-    ws.onmessage = (event) => {
-      const messageGot = event.data;
-      setMessages((prev) => [...prev, messageGot]);
-    };
-
-    return () => {
-      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
-        ws.close();
-      }
-    };
-  }, []);
-
-  const sendMessageToServer = () => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(inputMessage);
-      setInputMessage(''); // Clear the input after sending the message
-    }
-  };
+import React from 'react'
+import { FC } from 'react';
+import { motion } from 'framer-motion';
+interface Card {
+  value: string;
+  // Add any other properties your card object might have
+  suit?: string;
+  id: number;
+}   
+interface CardProps {
+  card: Card;
+}
+const Card: FC<CardProps> = ({ card }) => {
+  return (
+    <motion.div
+      className="w-32 h-48 bg-white shadow-lg rounded-lg flex items-center justify-center"
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      {card.value}
+    </motion.div>
+  );
+};
+const App: FC = () => {
+  const cards: Card[] = [
+    { value: 'A', suit: 'hearts', id: 1 },
+    { value: 'K', suit: 'spades', id: 2 },
+    { value: 'Q', suit: 'diamonds', id: 3 },
+    { value: 'J', suit: 'clubs', id: 4 },
+  ];
 
   return (
-    <div className='h-screen bg-slate-600 flex justify-center items-center flex-col'>
-      <div className='flex flex-row gap-4 w-3/4 justify-center'>
-        <input 
-          type="text" 
-          className='p-3 text-center rounded-lg w-2/3'
-          value={inputMessage} 
-          onChange={(e) => setInputMessage(e.target.value)} 
-        />
-        <button onClick={sendMessageToServer}>Send</button>
-      </div>
-      <div className='flex flex-col '>
-        {messages.map((m, index) => (
-          <div key={index} className='font-extrabold text-lg'>{m}</div>
-        ))}
-      </div>
+    <div className="flex space-x-4 p-8">
+      {cards.map((card) => (
+        <Card key={card.id} card={card} />
+      ))}
     </div>
   );
-}
+};
 
-export default App;
+export default App
