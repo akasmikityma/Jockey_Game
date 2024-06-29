@@ -38,16 +38,16 @@
 //   );
 // };
 
+// // export default App
+// import React from 'react'
+// import CardCell from './comps/CardCell'
+
+// const App = () => {
+//   return (
+//     <div>
+//       <CardCell card={{key: 'd', card: 2, image: 'https://via.placeholder.com/150?text=2D'}}/>
+//     </div>
+//   )
+// }
+
 // export default App
-import React from 'react'
-import CardCell from './comps/CardCell'
-
-const App = () => {
-  return (
-    <div>
-      <CardCell card={{key: 'd', card: 2, image: 'https://via.placeholder.com/150?text=2D'}}/>
-    </div>
-  )
-}
-
-export default App

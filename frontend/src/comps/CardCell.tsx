@@ -1,32 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { allCards, Card } from "../store/Cards";
+import React from 'react';
 
-interface CardCellProps {
-  card: Card;
+interface CardProps {
+  src: string;
+  alt: string;
+  style: React.CSSProperties;
+  className: string;
 }
 
-const CardCell: React.FC<CardCellProps> = ({ card }) => {
-  const [thisCard, setThisCard] = useState<Card>({
-    key: '',
-    card: '',
-    image: ''
-  });
-
-  useEffect(() => {
-    const findCard = () => {
-      const flatCards = allCards.flat();
-      const theCard = flatCards.find((c) => c.key === card.key && c.card === card.card);
-      setThisCard(theCard || { key: '', card: '', image: '' });
-    };
-
-    findCard();
-  }, [card]);
-
+const Card: React.FC<CardProps> = ({ src, alt, style, className }) => {
   return (
-    <div>
-      <img src={thisCard.image} alt={`${thisCard.card} of ${thisCard.key}`} />
+    <div className={`rounded-sm absolute border ${className}`} style={style}>
+      <img src={src} alt={alt} className="h-full w-full object-cover rounded-sm" />
     </div>
   );
 };
 
-export default CardCell;
+export default Card;
