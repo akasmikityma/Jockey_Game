@@ -40,3 +40,8 @@ useEffect -- inside this a instance/object  of websocket is created and then set
 points >> 
 
 1 make the cards more centralized --> make the Valid_Sets closer to the players div --> then write the logic  
+
+
+1. make the valid sets card a bit >>
+2. make the modal that shows the card [remaining_card/given_back-card]
+3. 
