@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Card from './CardCell';
 
-
 const Board: React.FC = () => {
   const [length, setLength] = useState<number>(10);
   const [gblength, setGblength] = useState<number>(4);
-  const [modalopen,setModalopen]=useState(false);
+  const [modalopen, setModalopen] = useState(false);
+  
   // Sample card images
   const cardImages: string[] = [
     'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png',
@@ -15,104 +15,105 @@ const Board: React.FC = () => {
 
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
-      
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
-        <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/6 rounded-xl text-center  font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
-
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-200'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-
-        </div>
-
-
-        {/* player set 2 */}
-
-        <div className='absolute top-1/2 right-0 transform -translate-y-1/2 w-1/2 h-1/6 rounded-xl text-center  font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
         
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-200'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-        
-        </div>
-
-        {/* player set 3 */}
-
-
-        <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/6 rounded-xl text-center  font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
-        
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-200'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        </div>
-
-
-        </div>
-        
-        {/* player set 4 */}
-        
-        <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-1/2 h-1/6 rounded-xl text-center  font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
-        
-        <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-200'>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
-        <div className='flex border-2 border-black'>
-          <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full'/>
-        </div>
+        {/* Player set 1 */}
+        <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
+          <div className='grid grid-cols-3 w-full h-full'>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+          </div>
         </div>
 
+        {/* Player set 2 */}
+        <div className='absolute top-1/2 right-0 transform -translate-y-1/2 w-1/2 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
+          <div className='grid grid-cols-3 w-full h-full'>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+            <div className='w-2/3 h-4/5 flex gap-0.5'>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+              <div className='flex border-2 border-black'>
+                <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div className='absolute top-1/4 left-1/3' onClick={(e)=>{
-          setModalopen((prev)=>!prev)
-          
-        }}>
+
+        {/* Player set 3 */}
+        <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/6 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
+          <div className='w-2/3 h-4/5 flex gap-0.5'>
+            <div className='flex border-2 border-black'>
+              <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+            </div>
+            <div className='flex border-2 border-black'>
+              <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+            </div>
+          </div>
+        </div>
+
+        {/* Player set 4 */}
+        <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-1/2 h-1/6 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
+          <div className='w-2/3 h-4/5 flex gap-0.5'>
+            <div className='flex border-2 border-black'>
+              <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+            </div>
+            <div className='flex border-2 border-black'>
+              <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
+            </div>
+          </div>
+        </div>
+
+        <div className='absolute top-1/4 left-1/3' onClick={(e) => { setModalopen((prev) => !prev) }}>
           {Array.from({ length }).map((_, index) => (
             <div
               key={index}
-              className='bg-black h-20 w-12 rounded-sm absolute border border-white'
+              className='bg-black h-20 w-12 rounded-sm absolute border border-white mt-2'
               style={{
                 top: `${index * 1}px`,
                 right: `${index * 1}px`,
@@ -121,10 +122,8 @@ const Board: React.FC = () => {
             ></div>
           ))}
         </div>
-        {modalopen&&<Modal/>}
-        <div className='absolute top-1/4 right-1/3 flex items-center' onClick={()=>{
-          setModalopen((prev)=>!prev)
-        }}>
+        
+        <div className='absolute top-1/4 right-1/3 flex items-center' onClick={() => { setModalopen((prev) => !prev) }}>
           {Array.from({ length: gblength }).map((_, index) => (
             <Card
               key={index}
@@ -139,6 +138,9 @@ const Board: React.FC = () => {
             />
           ))}
         </div>
+        
+        {modalopen && <Modal />}
+
       </div>
       
       {/* Player indicators */}
@@ -149,15 +151,15 @@ const Board: React.FC = () => {
     </div>
   );
 };
-const Modal=()=>{
-  
+const Modal: React.FC = () => {
   return (
-    <div className='flex justify-center items-center border-2 border-yellow-300 w-1/6 h-1/3 mt-16'>
-      <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt=""  className='w-full h-full p-1'/>
+    <div className='flex justify-center items-center border-2 border-yellow-300 w-1/6 h-1/3 mt-16 z-50'>
+      <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full p-1 bg-black' />
     </div>
   )
 }
 export default Board;
+
 // import React, { useState } from 'react';
 // import Card from './CardCell';
 
@@ -179,7 +181,7 @@ export default Board;
         
 //         {/* Player set 1 */}
 //         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 h-1/6 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
-//           <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-200'>
+//           <div className='w-2/3 h-4/5 flex gap-0.5 border-2 '>
 //             <div className='flex border-2 border-black'>
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
@@ -187,7 +189,7 @@ export default Board;
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
 //           </div>
-//           <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
+//           <div className='w-2/3 h-4/5 flex gap-0.5 border-2'>
 //             <div className='flex border-2 border-black'>
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
@@ -195,7 +197,7 @@ export default Board;
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
 //           </div>
-//           <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
+//           <div className='w-2/3 h-4/5 flex gap-0.5 border-2'>
 //             <div className='flex border-2 border-black'>
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
@@ -203,7 +205,7 @@ export default Board;
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
 //           </div>
-//           <div className='w-1/5 h-4/5 flex gap-0.5 border-2 border-yellow-400'>
+//           <div className='w-2/3 h-4/5 flex gap-0.5 border-2'>
 //             <div className='flex border-2 border-black'>
 //               <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //             </div>
@@ -216,7 +218,7 @@ export default Board;
 //         {/* Player set 2 */}
 //         <div className='absolute top-1/2 right-0 transform -translate-y-1/2 w-1/6 h-1/2 rounded-xl text-center font-bold p-2 flex flex-col gap-4 justify-center items-center overflow-hidden'>
 //           {Array.from({ length: 4 }).map((_, index) => (
-//             <div key={index} className='w-full h-3/4 flex gap-0.5 border-2 border-yellow-200'>
+//             <div key={index} className='w-full h-3/4 flex gap-0.5 border-2 '>
 //               <div className='flex border-2 border-black'>
 //                 <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full' />
 //               </div>
@@ -228,10 +230,10 @@ export default Board;
 //         </div>
 
 //         {/* Player set 3 */}
-//         <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 border-2 border-yellow-400 w-1/6 h-1/6 rounded-xl text-center bg-blue-400 font-bold p-2'>valid sets</div>
+//         <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 border-2 w-1/6 h-1/6 rounded-xl text-center bg-blue-400 font-bold p-2'>valid sets</div>
         
 //         {/* Player set 4 */}
-//         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 border-2 border-yellow-400 w-1/6 h-1/6 rounded-xl text-center bg-blue-400 font-bold p-2'>valid sets</div>
+//         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 border-2 w-1/6 h-1/6 rounded-xl text-center bg-blue-400 font-bold p-2'>valid sets</div>
         
 //         {/* Card stacks */}
 //         <div className='absolute top-1/4 left-1/3' onClick={() => setModalopen(prev => !prev)}>
@@ -276,12 +278,6 @@ export default Board;
 //   );
 // };
 
-// const Modal: React.FC = () => {
-//   return (
-//     <div className='flex justify-center items-center border-2 border-yellow-300 w-1/6 h-1/3 mt-16'>
-//       <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/la.png" alt="" className='w-full h-full p-1' />
-//     </div>
-//   )
-// }
+
 
 // export default Board;
