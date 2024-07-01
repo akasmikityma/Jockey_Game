@@ -42,6 +42,37 @@ points >>
 1 make the cards more centralized --> make the Valid_Sets closer to the players div --> then write the logic  
 
 
-1. make the valid sets card a bit >>
-2. make the modal that shows the card [remaining_card/given_back-card]
-3. 
+1. make the valid sets card a bit >> [some what done ]
+2. make the modal that shows the card [remaining_card/given_back-card] [somewhat done]
+
+
+
+3. make the logic of using recoil-atoms-selectors ---
+  
+   cards >>  
+   
+   cards of the respective players has to be maintained 
+      -- lets say i'll have 4 atoms for 4 players 
+
+   valid-sets of the respective players 
+       --- suppose 4 atoms for 4 players 
+
+   the game has a valid sets property that ultimately has all the sets of all the players ..[How_do_i_list_the_sets_as_per_players?]
+       -->> when the player sends the message "showSet" then only if the set is valid get that pushed into the players atom_state ..and at the same time the players cardInHands atom_state has to be taken care of ..
+
+   When a player adds to another players valid set>>
+
+     -->> handle the state of the cardInHands of the player who's adding and the state of te valid_set where the card getting pushed to  
+   
+   remaining cards and the given_back cards >>
+
+
+   CARD FETCHING ==>
+
+       the player gets to pick either from the remaining Ones or given_backs --[so if clicked on the either option means the player cant click on the other on that very turn ] 
+   
+       * while taking the card clicking anywhere outside of the card makes the card disappear >>
+
+       when the player takes the card immediately alert comes give one card back .. all the cards gets one button there like an arraow or something ..on which the player has to click to give that very card >>
+
+       when the remainings deck is empty then  the given given back is disappeared and as soon as one player moves eventually the given_backs deck gets rendered

@@ -7,7 +7,7 @@ interface CardProps {
   className: string;
 }
 
-const Card: React.FC<CardProps> = ({ src, alt, style, className }) => {
+const CardCell: React.FC<CardProps> = ({ src, alt, style, className }) => {
   return (
     <div className={`rounded-sm absolute border ${className}`} style={style}>
       <img src={src} alt={alt} className="h-full w-full object-cover rounded-sm" />
@@ -15,4 +15,4 @@ const Card: React.FC<CardProps> = ({ src, alt, style, className }) => {
   );
 };
 
-export default Card;
+export default CardCell;

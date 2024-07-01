@@ -5,9 +5,10 @@ import './index.css'
 import Board from './comps/Board.tsx'
 // import ImprovBoard from './comps/ImprovBoard.tsx'
 // import AnotherBoard from './comps/anotherBoard.tsx'
+import { RecoilRoot } from 'recoil'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <RecoilRoot>
     <Board />
-  </React.StrictMode>,
+  </RecoilRoot>,
 )
