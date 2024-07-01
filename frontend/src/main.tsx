@@ -6,9 +6,10 @@ import Board from './comps/Board.tsx'
 // import ImprovBoard from './comps/ImprovBoard.tsx'
 // import AnotherBoard from './comps/anotherBoard.tsx'
 import { RecoilRoot } from 'recoil'
+import App from './App.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <RecoilRoot>
-    <Board />
+    <App />
   </RecoilRoot>,
 )

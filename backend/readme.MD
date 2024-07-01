@@ -66,4 +66,16 @@ game rules-- except the last card all are for the game ..
      how do i make the game end and again do the whole process ....
 
 how do i make sure players are moving one after another ..noOne moving twice or more back to back 
-and whenever the remaining cards are empty do i shuffle the given_back cards before assiginig to the remaining cards >> 
+and whenever the remaining cards are empty do i shuffle the given_back cards before assiginig to the remaining cards >>
+
+
+task>> 
+ get the cards from the message and populate the playercards state and send the user to the game/home page
+
+
+ for start : 
+             populate the cardsINhands --> the cards coming from backend doesnt have images so to set the cards to the state ==>
+                                                                                                                                1.change the cards there in the backend 
+                                                                                                                                or in frontend [do change the backend]
+
+            

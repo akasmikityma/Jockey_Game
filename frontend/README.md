@@ -76,3 +76,7 @@ points >>
        when the player takes the card immediately alert comes give one card back .. all the cards gets one button there like an arraow or something ..on which the player has to click to give that very card >>
 
        when the remainings deck is empty then  the given given back is disappeared and as soon as one player moves eventually the given_backs deck gets rendered
+
+
+
+<1> create another comp connect to the server and explore
