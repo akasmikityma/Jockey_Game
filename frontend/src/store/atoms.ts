@@ -3,6 +3,15 @@ import { Card } from "./Cards";
 
 //just need to care for this very client's inhandCards ..
 //validSets -Card[][]
+export const gamePlayers=atom({
+    key:"players_in_the_game",
+    default:<WebSocket[]>[]
+})
+
+export const Socket_ME=atom({
+    key:"ultimate_Player",
+    default:<WebSocket|null>null
+})
 
 export const plyers_InHands=atom({
     key:"inHandCardsOfPlayer1",

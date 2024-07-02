@@ -69,13 +69,17 @@ how do i make sure players are moving one after another ..noOne moving twice or 
 and whenever the remaining cards are empty do i shuffle the given_back cards before assiginig to the remaining cards >>
 
 
-task>> 
- get the cards from the message and populate the playercards state and send the user to the game/home page
+
+ 
+ in the game: 
+              1st>  players ui must be depending on how many players joining in >>
+              2nd>  the valid sets state should be populated as the game grows .. 
 
 
- for start : 
-             populate the cardsINhands --> the cards coming from backend doesnt have images so to set the cards to the state ==>
-                                                                                                                                1.change the cards there in the backend 
-                                                                                                                                or in frontend [do change the backend]
+              the cards -- are they repeating in different players hands /[done]
+              given backs should be updated and all []
+              how do i know that its my turn ?
+              player 4 shouldnt render if there are only 4 players joined in the game>>
 
+              **the remaing cards are not shuffled so after the cards are distributed run the shuffle again to the remaining ones ..
             

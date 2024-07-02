@@ -77,6 +77,18 @@ points >>
 
        when the remainings deck is empty then  the given given back is disappeared and as soon as one player moves eventually the given_backs deck gets rendered
 
+task>> 
+ get the cards from the message and populate the playercards state and send the user to the game/home page [done]
 
 
-<1> create another comp connect to the server and explore
+ for start : 
+             populate the cardsINhands --> the cards coming from backend doesnt have images so to set the cards to the state ==>
+                                                                                                                                1.change the cards there in the backend 
+                                                                                                                                or in frontend [do change the backend] [done]
+
+ so the player clicks the take it sends takefromrem and leave means give back [if the player didnt take that card he saw he dont need to give any of the inhandcards back ]
+
+ seeJockey: a card or some button that lets the player see the jockey . but the player anyway automatically gets to see the card after verifying a validset >>
+
+
+ first >> get the components in one page >>

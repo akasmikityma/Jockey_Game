@@ -17,35 +17,35 @@ const shuffleTheCards=(flatten_Cards:card[])=>{
 }
 
 export const DistributingCards = (players: number, The_Array: card[]): { playerArrays: card[][], remainingElements: card[] } => {
-            if (players < 1 || players > 5) {
-                throw new Error("Number of players must be between 1 and 5");
-            }
+    if (players < 1 || players > 5) {
+        throw new Error("Number of players must be between 1 and 5");
+    }
 
-            
-            const shuffled = shuffleTheCards(The_Array);
+    // Check for unique cards in The_Array
+    const uniqueCards = Array.from(new Set(The_Array.map(card => JSON.stringify(card)))).map(str => JSON.parse(str));
+    if (uniqueCards.length !== The_Array.length) {
+        throw new Error("The_Array contains duplicate cards.");
+    }
 
-            
-            const playerArrays: card[][] = Array.from({ length: players }, () => []);
+    const shuffled = shuffleTheCards(The_Array);
 
-            let index = 0;
-            while (true) {
-               
-                playerArrays[index % players].push(shuffled.shift()!);
+    const playerArrays: card[][] = Array.from({ length: players }, () => []);
 
-               
-                if (playerArrays.every(arr => arr.length >= 8)) {
-                    break;
-                }
+    let index = 0;
+    while (true) {
+        playerArrays[index % players].push(shuffled.shift()!);
 
-                
-                index++;
-            }
+        if (playerArrays.every(arr => arr.length >= 8)) {
+            break;
+        }
 
-           
-            const remainingElements = shuffled;
-            // console.log(`remaining cards :${remainingElements.flat()}`)
-            return { playerArrays, remainingElements };
+        index++;
+    }
+
+    const remainingElements = shuffled;
+    return { playerArrays, remainingElements };
 };
+
 const CreateRandom=(start:number,end:number)=>{
     const ans= Math.floor(Math.random()*end)
     return ans
@@ -93,3 +93,6 @@ export const setValidator = (arr: card[]): boolean => {
 
     return isSequentialSet(arr) || isSameCardsSet(arr);
 };
+
+// const playerCardshere=DistributingCards(4,flatten_Cards).playerArrays;
+// console.log(playerCardshere)
