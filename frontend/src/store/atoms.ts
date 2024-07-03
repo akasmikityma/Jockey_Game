@@ -63,17 +63,7 @@ export const pl4_Valids=atom({
 
 export const remainingCards=atom({
     key:"game's_remainingcards",
-    default:<Card[]>[
-        { key: 'h', card: 'A', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sa.png' },
-        { key: 'h', card: 'Q', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sq.png' },
-        { key: 'h', card: 'K', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sk.png' },
-        { key: 'h', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sj.png' },
-        { key: 'h', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s10.png' },
-        { key: 'h', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s9.png' },
-        { key: 'h', card: 8, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s8.png' },
-        { key: 'h', card: 7, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s7.png' },
-        { key: 'h', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s6.png' },
-    ]
+    default:<Card[]>[]
 })
 export const given_backs=atom({
     key:"game's_GivenBackCards",

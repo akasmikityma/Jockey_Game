@@ -134,7 +134,7 @@ export class GameManager {
                     currGame.Players[i].send(JSON.stringify({
                         type:"start",
                         msg: currGame.Players[i].cards,
-                        remainingCards: `Remaining Cards: ${JSON.stringify(currGame.board.leftOutCards)}`,
+                        remainingCards:currGame.board.leftOutCards,
                         Jockey: `The Jockey of The Game: ${currGame.Jockey}`
                     }));
                 }

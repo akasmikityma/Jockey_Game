@@ -12,7 +12,7 @@ const Board: React.FC = () => {
   const [modalopen, setModalopen] = useState(false);
   const [openCards, setOpenCards] = useState(false);
   const [topCard, setTopCard] = useState<Card>();
-  const [remainings, setRemainings] = useRecoilState(remainingCards);
+  // const [remainings, setRemainings] = useRecoilState(remainingCards);
   const [given_back_cards, setGivenBackCards] = useRecoilState(given_backs);
   const [playercards, setPlayerCards] = useRecoilState(plyers_InHands);
   const [player1valids, setPlayer1Valids] = useRecoilState(pl1_Valids);
@@ -24,22 +24,17 @@ const Board: React.FC = () => {
 
   useEffect(() => {
     console.log(`players in the game: ${JSON.stringify(players)}`);
+    // console.log(remainings)
   }, [players]);
 
   const take_card = () => {
     let topCard: Card | undefined;
     if (clickedBy === 'remaining') {
-      if(mePlayer){
-        const istheresocketpresent=players.includes(mePlayer)
-        console.log(istheresocketpresent)
-      }
       console.log('Sending message:', JSON.stringify({ type: "takefromrem" }));
         mePlayer?.send(JSON.stringify({ type: "takefromrem" }));
     } else if (clickedBy === 'gb') {
         topCard = given_back_cards[0];
-        mePlayer?.send(JSON.stringify({
-          type:"takefromgb"
-        }))
+        
         if (topCard) {
             setGivenBackCards(prev => prev.slice(1));
         }
@@ -181,18 +176,28 @@ const Board: React.FC = () => {
   );
 };
 
-const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void }> = ({ openerHandler, clickedby, takefunc }) => {
-  const [topCard, setTopCard] = useState<Card>();
-  const [remainings, setRemainings] = useRecoilState(remainingCards);
-  const [givencards, setGivenCards] = useRecoilState(given_backs);
+  const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void }> = ({ openerHandler, clickedby, takefunc }) => {
+    const [topCard, setTopCard] = useState<Card>();
+    const [remainings, setRemainings] = useRecoilState(remainingCards);
+    const [givencards, setGivenCards] = useRecoilState(given_backs);
 
-  useEffect(() => {
-    if (clickedby === 'gb') {
-      setTopCard(givencards[0]);
-    } else {
-      setTopCard(remainings[remainings.length - 1]);
-    }
-  }, [clickedby, remainings, givencards]);
+    useEffect(() => {
+      console.log('Clicked by:', clickedby);
+      console.log('Remaining Cards:', remainings);
+      console.log('Given Back Cards:', givencards);
+
+      if (clickedby === 'gb' && givencards.length > 0) {
+        console.log('Setting topCard from given back cards:', givencards[0]);
+        setTopCard(givencards[0]);
+      } else if (clickedby === 'remaining' && remainings.length > 0) {
+        console.log('Setting topCard from remaining cards:', remainings[remainings.length-1]);
+        setTopCard(remainings[0]);
+      } else {
+        console.log('No cards available to set as topCard.');
+        setTopCard(undefined);
+      }
+    }, [clickedby, remainings, givencards]);
+
 
   return (
     <div className='flex justify-center items-center w-1/6 h-1/3 mt-16 z-50'>
@@ -207,14 +212,15 @@ const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: 
               }
               if (topCard) {
                 setGivenCards(prev => [topCard, ...prev]);
-                console.log(givencards);
               }
             }}>Leave
           </button>
         </div>
 
         {/* Image */}
-        <img src={topCard?.image} alt="" className='w-full h-full p-1 bg-green-500 shadow-2xl shadow-black rounded-md border-green-500' />
+        {topCard && (
+          <img src={topCard.image} alt="Top Card" className='w-full h-full p-1 bg-green-500 shadow-2xl shadow-black rounded-md border-green-500' />
+        )}
       </div>
     </div>
   );

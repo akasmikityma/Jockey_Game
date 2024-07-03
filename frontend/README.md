@@ -92,3 +92,5 @@ task>>
 
 
  first >> get the components in one page >>
+
+ for now the remaining cards are not as per the game 
