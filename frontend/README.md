@@ -102,4 +102,15 @@ task>>
       handle show set ..
       make a jockey card or set the modal to be jockey >
       handle the situation when a player wins/ the game gets over ..
-       
+
+
+      issues -> the top card shows the 0th card instead of the last one >>
+                top card doesnt actually get in the hands since the backend pushes the last one >>so there are 9 cards after take but the card is not the modal has showed>>
+                the card that is given back is not being shown to everybody <>> [resolved all]
+
+       how to directly leave the the card and push that to the given_backs?
+
+       MAJOR>> how do i let the user make the set ?
+
+              lets say there would be a button that lets u atleast click on 3 cards and then once there are 3 cards ..player sends the message >> 
+              
