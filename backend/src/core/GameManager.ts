@@ -151,7 +151,8 @@ export class GameManager {
                 currentPlayer.cards.push(card);
                 currentPlayer.send(JSON.stringify({ msg: `I'm taking this card: ${JSON.stringify(card)}` }));
                 currentPlayer.send(JSON.stringify({
-                    msg: `These are your cards now - ${JSON.stringify(currentPlayer.cards)}. Please give back a card.`,
+                    type:"takeRemRes",
+                    msg: currentPlayer.cards,
                     action: "giveback"
                 }));
             } else {
@@ -169,7 +170,8 @@ export class GameManager {
                 currentPlayer.cards.push(card);
                 currentPlayer.send(JSON.stringify({ msg: `I'm taking this card: ${JSON.stringify(card)}` }));
                 currentPlayer.send(JSON.stringify({
-                    msg: `These are your cards now - ${JSON.stringify(currentPlayer.cards)}. Please give back a card.`,
+                    type:"takeGbRes",
+                    msg: currentPlayer.cards,
                     action: "giveback"
                 }));
             } else {
@@ -195,7 +197,9 @@ export class GameManager {
             currGame.board.givenBackCards.push(card);
             currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(card)}` }));
             currentPlayer.send(JSON.stringify({
-                msg: `These are your cards now - ${JSON.stringify(currentPlayer.cards)}`
+                type:"aftergb",
+                msg: currentPlayer.cards,
+                givenBacks:currGame.board.givenBackCards
             }));
         }
     }

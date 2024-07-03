@@ -90,7 +90,16 @@ task>>
 
  seeJockey: a card or some button that lets the player see the jockey . but the player anyway automatically gets to see the card after verifying a validset >>
 
+ * remaining cards are set at the explore only ..
 
- first >> get the components in one page >>
+ for now from board players are only sending messages not REACTING to it >>
 
- for now the remaining cards are not as per the game 
+     how to do that? 
+
+      inside useEffect have some onmessage handlers ==> to take and give the card back and then set the inHandCards
+      handle the turns .. put some messages on if its turn has come or not >>
+      set some time limit like 30 secs .. one player can only think for maximum 30 seconds >>
+      handle show set ..
+      make a jockey card or set the modal to be jockey >
+      handle the situation when a player wins/ the game gets over ..
+       

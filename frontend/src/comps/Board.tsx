@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, remainingCards, gamePlayers, Socket_ME } from '../store/atoms';
-import CardCell from './CardCell';
+import { useRecoilState } from 'recoil';
+import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, gamePlayers ,remainingCards} from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
+import CardCell from './CardCell';
+
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
-  // const mePlayer=useRecoilValue(Socket_ME)
   const [length, setLength] = useState<number>(10);
-  const [gblength, setGblength] = useState<number>(4);
   const [modalopen, setModalopen] = useState(false);
   const [openCards, setOpenCards] = useState(false);
-  const [topCard, setTopCard] = useState<Card>();
-  // const [remainings, setRemainings] = useRecoilState(remainingCards);
   const [given_back_cards, setGivenBackCards] = useRecoilState(given_backs);
   const [playercards, setPlayerCards] = useRecoilState(plyers_InHands);
   const [player1valids, setPlayer1Valids] = useRecoilState(pl1_Valids);
@@ -24,32 +21,52 @@ const Board: React.FC = () => {
 
   useEffect(() => {
     console.log(`players in the game: ${JSON.stringify(players)}`);
-    // console.log(remainings)
+    if (mePlayer) {
+      mePlayer.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        switch (message.type) {
+          case "takeRemRes":
+            console.log(message.msg)
+            setPlayerCards(message.msg);
+            alert(`you have to give one back ${message.action}`)
+            break;
+
+          case "takeGbRes":
+            console.log(message.msg);
+            setPlayerCards(message.msg);
+            alert(`you have to give one back ${message.action}`)
+          case "aftergb":
+
+            setPlayerCards(message.msg)
+            setGivenBackCards(message.givenBacks)
+            alert(`your turn is complete`);
+            break;
+          default:
+            console.log(message.type)
+        }
+      }
+    }
   }, [players]);
 
   const take_card = () => {
     let topCard: Card | undefined;
     if (clickedBy === 'remaining') {
       console.log('Sending message:', JSON.stringify({ type: "takefromrem" }));
-        mePlayer?.send(JSON.stringify({ type: "takefromrem" }));
+      mePlayer?.send(JSON.stringify({ type: "takefromrem" }));
     } else if (clickedBy === 'gb') {
-        topCard = given_back_cards[0];
-        
-        if (topCard) {
-            setGivenBackCards(prev => prev.slice(1));
-        }
+      console.log('Sending message:', JSON.stringify({ type: "takefromgb" }));
+      mePlayer?.send(JSON.stringify({ type: "takefromgb" }));
     }
-    if (topCard) {
-        setPlayerCards(prev => [...prev, topCard]);
-    }
+    // if (topCard) {
+    //   setPlayerCards(prev => [...prev, topCard]);
+    // }
     setModalopen(false);
-};
-
+  };
 
   const give_card_back = (e: React.MouseEvent<HTMLDivElement>, card: Card) => {
+    e.stopPropagation(); // Prevent event propagation
+    console.log(`card double clicked`);
     mePlayer?.send(JSON.stringify({ type: "giveback", card }));
-    setPlayerCards(prev => prev.filter(c => c !== card));
-    setGivenBackCards(prev => [card, ...prev]);
   };
 
   return (
@@ -90,7 +107,10 @@ const Board: React.FC = () => {
           {openCards ? (
             <div className='flex'>
               {playercards.map((C, i) => (
-                <div className='border-2' key={i} onDoubleClick={(e) => give_card_back(e, C)}>
+                <div className='border-2' key={i} onDoubleClick={(e) => {
+                  console.log('Double click event triggered'); // Debugging log
+                  give_card_back(e, C);
+                }}>
                   <img src={C.image} alt="" />
                 </div>
               ))}
@@ -176,28 +196,27 @@ const Board: React.FC = () => {
   );
 };
 
-  const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void }> = ({ openerHandler, clickedby, takefunc }) => {
-    const [topCard, setTopCard] = useState<Card>();
-    const [remainings, setRemainings] = useRecoilState(remainingCards);
-    const [givencards, setGivenCards] = useRecoilState(given_backs);
+const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void }> = ({ openerHandler, clickedby, takefunc }) => {
+  const [topCard, setTopCard] = useState<Card>();
+  const [remainings, setRemainings] = useRecoilState(remainingCards);
+  const [givencards, setGivenCards] = useRecoilState(given_backs);
 
-    useEffect(() => {
-      console.log('Clicked by:', clickedby);
-      console.log('Remaining Cards:', remainings);
-      console.log('Given Back Cards:', givencards);
+  useEffect(() => {
+    console.log('Clicked by:', clickedby);
+    console.log('Remaining Cards:', remainings);
+    console.log('Given Back Cards:', givencards);
 
-      if (clickedby === 'gb' && givencards.length > 0) {
-        console.log('Setting topCard from given back cards:', givencards[0]);
-        setTopCard(givencards[0]);
-      } else if (clickedby === 'remaining' && remainings.length > 0) {
-        console.log('Setting topCard from remaining cards:', remainings[remainings.length-1]);
-        setTopCard(remainings[0]);
-      } else {
-        console.log('No cards available to set as topCard.');
-        setTopCard(undefined);
-      }
-    }, [clickedby, remainings, givencards]);
-
+    if (clickedby === 'gb' && givencards.length > 0) {
+      console.log('Setting topCard from given back cards:', givencards[0]);
+      setTopCard(givencards[0]);
+    } else if (clickedby === 'remaining' && remainings.length > 0) {
+      console.log('Setting topCard from remaining cards:', remainings[0]);
+      setTopCard(remainings[0]);
+    } else {
+      console.log('No cards available to set as topCard.');
+      setTopCard(undefined);
+    }
+  }, [clickedby, remainings, givencards]);
 
   return (
     <div className='flex justify-center items-center w-1/6 h-1/3 mt-16 z-50'>
