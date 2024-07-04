@@ -253,7 +253,6 @@
 // };
 
 // export default Board;
-
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, gamePlayers, remainingCards } from '../store/atoms';
@@ -332,11 +331,14 @@ const Board: React.FC = () => {
     console.log(`card double clicked`);
     mePlayer?.send(JSON.stringify({ type: "giveback", card }));
   };
- const buttonWalagiveBack=(e: React.MouseEvent<HTMLButtonElement>, card: Card)=>{
-    e.stopPropagation(); // Prevent event propagation
-    console.log(`card double clicked`);
-    mePlayer?.send(JSON.stringify({ type: "leaveCard", card }));
- }
+
+  const buttonWalagiveBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Prevent event propagation
+    console.log(`leave clicked`);
+    console.log('Sending message:', JSON.stringify({ type: "leaveCard" }));
+    mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+  };
+
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
@@ -432,7 +434,7 @@ const Board: React.FC = () => {
           </div>
         )}
 
-        {given_back_cards.length > 0 && (
+        {given_back_cards?.length > 0 && (
           <div className='absolute top-1/4 right-1/3 flex items-center' onClick={() => {
             setModalopen(prev => !prev);
             setClickedBy('gb');
@@ -468,7 +470,7 @@ const Board: React.FC = () => {
   );
 };
 
-const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, card: Card) => void }> = ({ openerHandler, clickedby, takefunc, remainings, giveCardBack }) => {
+const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({ openerHandler, clickedby, takefunc, remainings, giveCardBack }) => {
   const [topCard, setTopCard] = useState<Card>();
   const [givencards, setGivenCards] = useRecoilState(given_backs);
 
@@ -492,11 +494,12 @@ const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: 
         <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2 mb-2">
           <button className="bg-white/30 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded border-2 border-yellow-300" onClick={takefunc}>Take</button>
           <button className="bg-white/30 hover:bg-red-700 text-black font-bold py-2 px-4 rounded border-2 border-yellow-300" onClick={(e) => {
-            openerHandler();
+            e.preventDefault()
             console.log('Leaving card:', topCard);
             if (topCard) {
-              giveCardBack(e, topCard);
+              giveCardBack(e);
             }
+            openerHandler();
           }}>Leave</button>
         </div>
         {topCard && (
