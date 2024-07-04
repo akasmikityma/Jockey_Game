@@ -122,5 +122,12 @@ task>>
 next one hour> try to incorporate dnd on the cards in hands >>
 
 
+             helper -------------
+onDragEnd : the function that sets the order/postion the list 
+DragDropContext : the whole area having the functionality : inHandCards
+Droppable: the area where the draggbles can be put :  
+Draggable: the divs/tags that are to be dragged :
+
+
 
 minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >>

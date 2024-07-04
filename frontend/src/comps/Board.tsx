@@ -259,7 +259,7 @@ import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InH
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
-
+import { DragDropContext,Draggable,Droppable, DraggableId} from 'react-beautiful-dnd';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   const [length, setLength] = useState<number>(10);
@@ -314,6 +314,20 @@ const Board: React.FC = () => {
       };
     }
   }, [mePlayer]);
+  
+  //handleDragEnd-------
+
+  const handleOnDragEnd = (result:any) => {
+    if (!result.destination) return;
+
+    const newPlayerCards = Array.from(playercards);
+    const [movedCard] = newPlayerCards.splice(result.source.index, 1);
+    newPlayerCards.splice(result.destination.index, 0, movedCard);
+
+    // Update the state or handle the new order of cards
+    setPlayerCards(newPlayerCards);
+    console.log('New order of playercards:', newPlayerCards);
+  };
 
   const take_card = () => {
     if (clickedBy === 'remaining') {
@@ -332,11 +346,16 @@ const Board: React.FC = () => {
     mePlayer?.send(JSON.stringify({ type: "giveback", card }));
   };
 
-  const buttonWalagiveBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const buttonWalagiveBack = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault(); // Prevent event propagation
     console.log(`leave clicked`);
     console.log('Sending message:', JSON.stringify({ type: "leaveCard" }));
-    mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+    try {
+      mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+    } catch (error) {
+      console.error('Error sending leaveCard message:', error);
+    }
+    setModalopen(false);
   };
 
   return (
@@ -374,31 +393,56 @@ const Board: React.FC = () => {
 
         {/* Player 3 - Current Player */}
         <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4/5 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
-          {openCards ? (
-            <div className='flex'>
-              {playercards.map((C, i) => (
-                <div className='border-2' key={i} onDoubleClick={(e) => {
-                  console.log('Double click event triggered'); // Debugging log
-                  give_card_back(e, C);
-                }}>
-                  <img src={C.image} alt="" />
+      {openCards ? (
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="playercards" direction="horizontal">
+            {(provided) => (
+              <div className='flex overflow-auto w-full' {...provided.droppableProps} ref={provided.innerRef} >
+                {playercards.map((C, i) => (
+                  <Draggable key={C.image} draggableId={C.image} index={i}>
+                    {(provided) => (
+                      <div
+                        className='border-2'
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        onDoubleClick={(e) => {
+                          console.log('Double click event triggered');
+                          give_card_back(e, C);
+                        }}
+                        style={{ 
+                          userSelect: 'none',
+                          padding: '8px',
+                          margin: '0 8px 0 0',
+                          minHeight: '50px',
+                          backgroundColor: '#fff',
+                          ...provided.draggableProps.style,
+                        }}
+                      >
+                        <img src={C.image} alt="" />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      ) : (
+        <div className='grid grid-cols-3 w-full h-full'>
+          {player3valids.map((ca, i) => (
+            <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
+              {ca.map((cs, j) => (
+                <div className='flex border-2 border-black' key={j}>
+                  <img src={cs.image} alt="" className='w-full h-full' />
                 </div>
               ))}
             </div>
-          ) : (
-            <div className='grid grid-cols-3 w-full h-full'>
-              {player3valids.map((ca, i) => (
-                <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
-                  {ca.map((cs, j) => (
-                    <div className='flex border-2 border-black' key={j}>
-                      <img src={cs.image} alt="" className='w-full h-full' />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
+      )}
+    </div>
 
         {/* Player 4 */}
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-1/2 h-1/6 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
@@ -463,7 +507,7 @@ const Board: React.FC = () => {
           </div>
         )}
 
-        {modalopen && <Modal openerHandler={() => setModalopen(true)} clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
+        {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
       </div>
 
       {/* Player indicators */}
@@ -478,7 +522,7 @@ const Board: React.FC = () => {
   );
 };
 
-const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({ openerHandler, clickedby, takefunc, remainings, giveCardBack }) => {
+const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({  clickedby, takefunc, remainings, giveCardBack }) => {
   const [topCard, setTopCard] = useState<Card>();
   const [givencards, setGivenCards] = useRecoilState(given_backs);
 
@@ -507,7 +551,6 @@ const Modal: React.FC<{ openerHandler: () => void, clickedby: string, takefunc: 
             if (topCard) {
               giveCardBack(e);
             }
-            openerHandler();
           }}>Leave</button>
         </div>
         {topCard && (
