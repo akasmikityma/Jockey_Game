@@ -311,13 +311,9 @@ export class GameManager {
                             currentPlayer.send(JSON.stringify({ msg: "You need to take a card first!" }));
                         }
                         break;
-                        case "leaveCard":
-                            if (currGame.isAwaitingGiveBack() && card) {
-                                this.handleLeaveCard(socket, card);
+                        case "leaveCard":   
+                                this.handleLeaveCard(socket);
                                 currGame.incrementMoveCount();
-                            } else {
-                                currentPlayer.send(JSON.stringify({ msg: "You need to take a card first!" }));
-                            }
                             break;
                     default:
                         console.log("Unknown message type:", type);
@@ -437,6 +433,7 @@ export class GameManager {
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);
         if (currentPlayer && currGame) {
+            console.log("Received giveback message:", card); // Add this line
             currentPlayer.cards = currentPlayer.cards.filter(c => c.key !== card.key || c.card !== card.card);
             currGame.board.givenBackCards.push(card);
             currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(card)}` }));
@@ -448,13 +445,17 @@ export class GameManager {
             this.broadcastGameState(currGame);
         }
     }
-    private handleLeaveCard(socket: WebSocket, card: card){
+    
+    private handleLeaveCard(socket: WebSocket){
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);
         if (currentPlayer && currGame) {
             // currentPlayer.cards = currentPlayer.cards.filter(c => c.key !== card.key || c.card !== card.card);
-            currGame.board.givenBackCards.push(card);
-            currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(card)}` }));
+            const this_card=currGame.board.leftOutCards.pop();
+            if(this_card){
+                currGame.board.givenBackCards.push(this_card);
+            }
+            currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(this_card)}` }));
             currentPlayer.send(JSON.stringify({
                 type: "afterleave",
                 msg: currentPlayer.cards,

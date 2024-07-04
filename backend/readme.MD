@@ -83,3 +83,5 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
 
               **the remaing cards are not shuffled so after the cards are distributed run the shuffle again to the remaining ones ..
             
+
+all the remainings are used then make the given-backs the remainings 

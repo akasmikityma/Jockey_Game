@@ -115,3 +115,12 @@ task>>
 
               lets say there would be a button that lets u atleast click on 3 cards and then once there are 3 cards ..player sends the message >> 
               
+              there would be a button clicking which  anew modal pops up ..and the player then clicks on the cards it has and those cards then enters 
+              to the modal  
+
+
+next one hour> try to incorporate dnd on the cards in hands >>
+
+
+
+minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >>

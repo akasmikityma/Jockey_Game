@@ -417,7 +417,11 @@ const Board: React.FC = () => {
 
         {boardRemainings && (
           <div className='absolute top-1/4 left-1/3' onClick={() => {
-            setModalopen(prev => !prev);
+            if(modalopen===true){
+              alert(`You have to take or leave the card`)
+            }else{
+              setModalopen(true)
+            }
             setClickedBy('remaining');
           }}>
             {Array.from({ length }).map((_, index) => (
@@ -436,7 +440,11 @@ const Board: React.FC = () => {
 
         {given_back_cards?.length > 0 && (
           <div className='absolute top-1/4 right-1/3 flex items-center' onClick={() => {
-            setModalopen(prev => !prev);
+            if(modalopen===true){
+              alert(`You have to take or leave the card`)
+            }else{
+              setModalopen(true)
+            }
             setClickedBy('gb');
           }}>
             {given_back_cards.slice().reverse().map((c, index)=> (
@@ -455,7 +463,7 @@ const Board: React.FC = () => {
           </div>
         )}
 
-        {modalopen && <Modal openerHandler={() => setModalopen(prev => !prev)} clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
+        {modalopen && <Modal openerHandler={() => setModalopen(true)} clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
       </div>
 
       {/* Player indicators */}
