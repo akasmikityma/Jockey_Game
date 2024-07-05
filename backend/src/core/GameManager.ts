@@ -395,6 +395,7 @@ export class GameManager {
                 console.log("No cards left in the deck.");
             }
         }
+        //if the currgame.board.leftoutCards are empty make the givenbacks assigned to leftouts and make givenbacks empty .. 
     }
 
     private handleTakeFromGb(socket: WebSocket) {

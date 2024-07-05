@@ -131,3 +131,5 @@ Draggable: the divs/tags that are to be dragged :
 
 
 minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >>
+
+now tasks--> make the button

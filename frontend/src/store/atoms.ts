@@ -61,6 +61,11 @@ export const pl4_Valids=atom({
     ]]
 })
 
+export const selectedCards=atom({
+    key:"selectedForValidSets",
+    default:<Card[]>[]
+})
+
 export const remainingCards=atom({
     key:"game's_remainingcards",
     default:<Card[]>[]
