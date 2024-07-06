@@ -314,7 +314,10 @@ export class GameManager {
                         case "leaveCard":   
                                 this.handleLeaveCard(socket);
                                 currGame.incrementMoveCount();
-                            break;
+                        break;
+                        case "leaveFormGB":
+                            this.handleLeaveCardfromGB(socket);
+                            currGame.incrementMoveCount();
                     default:
                         console.log("Unknown message type:", type);
                 }
@@ -477,6 +480,23 @@ export class GameManager {
             this.broadcastGameState(currGame);
         }
     }
+
+    private handleLeaveCardfromGB(socket: WebSocket){
+        const currentPlayer = this.findPlayerInGame(socket);
+        const currGame = this.findGameByPlayerSocket(socket);
+        if (currentPlayer && currGame) {
+            // currentPlayer.cards = currentPlayer.cards.filter(c => c.key !== card.key || c.card !== card.card);
+           
+            currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(currGame.board.givenBackCards[currGame.board.givenBackCards.length-1])}` }));
+            currentPlayer.send(JSON.stringify({
+                type: "afterleave",
+                msg: currentPlayer.cards,
+                givenBacks: currGame.board.givenBackCards
+            }));
+            this.broadcastGameState(currGame);
+        }
+    }
+
     private broadcastGameState(game: Game) {
         const gameState = {
             type: "gameStateUpdate",

@@ -130,9 +130,11 @@ Draggable: the divs/tags that are to be dragged :
 
 
 
-minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >>
-             --> given_backCards clicked -- then clicked on the leave makes the top card from the remaining get pulled to the given_backs >>
+minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >> 
+             --> given_backCards clicked -- then clicked on the leave makes the top card from the remaining get pulled to the given_backs >> [resolved]
              --> toggle selection of the cards >>
+              [done]
+             [if the set is not valid /less than length make the setselecteds empty] is the move incremented once the player successfully put valids to the overall set
              --> think of rearranging the board/players >>
 
              

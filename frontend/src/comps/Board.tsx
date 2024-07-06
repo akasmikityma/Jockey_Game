@@ -112,7 +112,14 @@ const Board: React.FC = () => {
     console.log(`leave clicked`);
     console.log('Sending message:', JSON.stringify({ type: "leaveCard" }));
     try {
-      mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+      // mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+      if(clickedBy==="remaining"){
+        mePlayer?.send(JSON.stringify({ type: "leaveCard"}));
+      }else{
+        mePlayer?.send(JSON.stringify({
+          type:"leaveFormGB"
+        }))
+      }
     } catch (error) {
       console.error('Error sending leaveCard message:', error);
     }
@@ -124,8 +131,11 @@ const Board: React.FC = () => {
     
     if (makingSet === true) {
       if(selectedforset.includes(card)){
-        setselectedforset((prev)=>prev.filter(c=>c===card))
+        setselectedforset((prev)=>prev.filter(c=>c!==card))
+        alert(`already included that card - removing the card from there ${JSON.stringify(selectedforset)}`)
+        
       }else{
+        alert(`one card added ${JSON.stringify(selectedforset)}`)
         setselectedforset((prev)=>[...prev,card])
       }
     }
@@ -300,12 +310,15 @@ const Board: React.FC = () => {
        <button className={`px-2 py1 ${makingSet?`bg-black`:`bg-orange-600`} text-white font-semibold`} onClick={()=>{
         setMakingSet((prev)=>!prev)
         //now its true>>
-       if(makingSet){
+       if(makingSet && selectedforset.length>=3){
         mePlayer?.send(JSON.stringify({      
           type:"showSet",
           set:selectedforset
       }))
-      alert(`bal`)
+      alert(`set put to validation`)
+       }else if(makingSet && selectedforset.length<3){
+        setselectedforset([])
+        alert(`u have to at least select 3 cards`)
        }
        }}>{makingSet?`submit`:`makeSet`}</button>
        </div>
