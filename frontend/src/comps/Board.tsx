@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards } from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
@@ -22,7 +22,7 @@ const Board: React.FC = () => {
   const [players, setPlayers] = useRecoilState(gamePlayers);
   const [makingSet,setMakingSet]=useState(false)
   const [selectedforset,setselectedforset]=useRecoilState(selectedCards);
-  const [rightClicked,setRightClicked]=useState(0)
+  
   useEffect(() => {
     console.log(`players in the game: ${JSON.stringify(players)}`);
     if (mePlayer) {
@@ -50,6 +50,9 @@ const Board: React.FC = () => {
             setBoardRemainigs(message.remainingCards);
             setGivenBackCards(message.givenBackCards);
             break;
+          case "showRes":
+            console.log(message)
+             setPlayer3Valids(message.valids)
 
           case "afterleave":
             console.log(message)
@@ -108,13 +111,20 @@ const Board: React.FC = () => {
  
   const settingValids = (e: React.MouseEvent<HTMLDivElement>, card: Card) => {
     e.preventDefault();
- 
+    
     if (makingSet === true) {
-            setselectedforset((prev) => [...prev, card]);
-            setRightClicked((prev)=>prev===0?1:0);
-          }
-          alert(`you've put a card to the set`);
+      if(selectedforset.includes(card)){
+        setselectedforset((prev)=>prev.filter(c=>c===card))
+      }else{
+        setselectedforset((prev)=>[...prev,card])
+      }
+    }
   };
+
+  const isSected=(card:Card)=>{
+    const value=selectedforset.includes(card);
+    return value;
+  }
 
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
@@ -160,7 +170,7 @@ const Board: React.FC = () => {
                   <Draggable key={C.image} draggableId={C.image} index={i}>
                     {(provided) => (
                       <div
-                      className={`${makingSet ? `border-4 border-red-600` : `border-2`}  ${rightClicked?`border-yellow-600`:``}`}
+                      className={`${makingSet ? `border-4 border-red-600` : `border-2`} ${isSected(C)?`border-yellow-500`:``}`}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -168,7 +178,7 @@ const Board: React.FC = () => {
                           console.log('Double click event triggered');
                           give_card_back(e, C);
                         }}
-                        defaultValue={rightClicked}
+                        
                         onContextMenu={(e)=>settingValids(e,C)}
                         style={{ 
                           userSelect: 'none',
@@ -179,7 +189,7 @@ const Board: React.FC = () => {
                           ...provided.draggableProps.style,
                         }}
                       >
-                        <img src={C.image} alt="" className={` ${rightClicked?``:``}`}/>
+                        <img src={C.image} alt=""/>
                       </div>
                     )}
                   </Draggable>
@@ -277,7 +287,17 @@ const Board: React.FC = () => {
         <p>Player 3</p>
        <div className='flex flex-row gap-2'>
        <button onClick={() => setOpenCards(prev => !prev)} className={`${openCards?`bg-yellow-500`:`bg-white`} text-black px-2 py-1 rounded`}>{openCards?`close`:`Cards`}</button>
-       <button className={`px-2 py1 ${makingSet?`bg-black`:`bg-orange-600`} text-white font-semibold`} onClick={()=>setMakingSet((prev)=>!prev)}>{makingSet?`submit`:`makeSet`}</button>
+       <button className={`px-2 py1 ${makingSet?`bg-black`:`bg-orange-600`} text-white font-semibold`} onClick={()=>{
+        setMakingSet((prev)=>!prev)
+        //now its true>>
+       if(makingSet){
+        mePlayer?.send(JSON.stringify({      
+          type:"showSet",
+          set:selectedforset
+      }))
+      alert(`bal`)
+       }
+       }}>{makingSet?`submit`:`makeSet`}</button>
        </div>
       </div>
       <div className='absolute top-1/2 left-0 transform -translate-x-12 -translate-y-1/2 text-white p-16'>Player 4</div>

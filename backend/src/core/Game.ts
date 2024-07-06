@@ -52,6 +52,7 @@ import { card } from "../CardsAll";
 export interface plr extends WebSocket {
     cards: card[];
     hasStarted: boolean;
+    valids:card[]
 }
 
 class Board {

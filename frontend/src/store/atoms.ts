@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, atomFamily, selectorFamily } from "recoil";
 import { Card } from "./Cards";
 
 //just need to care for this very client's inhandCards ..
@@ -23,6 +23,16 @@ export const plyers_InHands=atom({
         { key: 'c', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/kj.png' },]
 }) 
 
+// export const getATom=atomFamily({
+//     key:"atomFamilytogetsingleAtom",
+//     default:selectorFamily({
+//         key:"selecInsidetheAtomFamily",
+//         get: (image:string)=>({get})=>{
+//             const cards=get(plyers_InHands);
+//             return cards.find((c)=>c.image===image)
+//         }
+//     })
+// })
 
 export const pl1_Valids=atom({
     key:"player1Valids",

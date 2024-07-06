@@ -334,7 +334,7 @@ export class GameManager {
     }
 
     private handleInitGame(socket: WebSocket) {
-        const newPlayer: plr = Object.assign(socket, { cards: [], hasStarted: false });
+        const newPlayer: plr = Object.assign(socket, { cards: [], hasStarted: false ,valids:[]});
         this.pendingPlayers.push(newPlayer);
         console.log(`Player added. Total pending players: ${this.pendingPlayers.length}`);
     }
@@ -419,14 +419,26 @@ export class GameManager {
     }
 
     private handleShowSet(socket: WebSocket, set: card[]) {
+        const currGame = this.findGameByPlayerSocket(socket);
+        const currentPlayer = this.findPlayerInGame(socket);
         if (setValidator(set)) {
-            const currGame = this.findGameByPlayerSocket(socket);
-            const currentPlayer = this.findPlayerInGame(socket);
+            if(currentPlayer && currGame){
+                currentPlayer.valids=set
             currGame?.board.validSets.push(set);
-            currentPlayer?.send(JSON.stringify({ msg: `Look, this is the set: ${JSON.stringify(set)}` }));
-            if(currGame){
+            currentPlayer?.send(JSON.stringify({
+                type:"showRes",
+                valids:currentPlayer.valids,
+                allValids:currGame?.board.validSets
+            }));
+            this.broadcastGameState(currGame)
+        }
+            // if(currGame){
                 
-            }
+            // }
+        }else{
+          currentPlayer?.send(JSON.stringify({
+            msg:`the set is not valid`
+          }))
         }
     }
 
@@ -469,7 +481,8 @@ export class GameManager {
         const gameState = {
             type: "gameStateUpdate",
             remainingCards: game.board.leftOutCards,
-            givenBackCards: game.board.givenBackCards
+            givenBackCards: game.board.givenBackCards,
+            validSets:game.board.validSets
         };
         for (const player of game.Players) {
             player.send(JSON.stringify(gameState));
