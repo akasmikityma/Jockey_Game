@@ -131,10 +131,11 @@ Draggable: the divs/tags that are to be dragged :
 
 
 minor issues --> player clicking on the given_backs knows what he wants to get ..so dont open the modal rather add that card directly >>
+             --> given_backCards clicked -- then clicked on the leave makes the top card from the remaining get pulled to the given_backs >>
+             --> toggle selection of the cards >>
+             --> think of rearranging the board/players >>
 
-select cards for the set is almost done ... just make the select thing toggling .. user can put/pull any sec in that time when its making the set[task] [done]
-
-task >> clicking on the submit button the cards must get removed from the hand and get added to the valid sets >>
+             
 
 
-click on submit -- send showset to the server -- get some response -- 
+

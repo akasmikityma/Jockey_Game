@@ -55,12 +55,7 @@ export const pl2_Valids=atom({
 
 export const pl3_Valids=atom({
     key:"player3valids",
-    default:<Card[][]>[[
-        { key: 'h', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s9.png' },
-    { key: 'h', card: 8, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s8.png' },
-    { key: 'h', card: 7, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s7.png' },
-    { key: 'h', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/s6.png' },
-    ]]
+    default:<Card[][]>[]
 })
 export const pl4_Valids=atom({
     key:"player4_valids",

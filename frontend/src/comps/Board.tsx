@@ -52,8 +52,8 @@ const Board: React.FC = () => {
             break;
           case "showRes":
             console.log(message)
-             setPlayer3Valids(message.valids)
-
+            handle_SHOW_RES(message)
+              
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
@@ -90,6 +90,16 @@ const Board: React.FC = () => {
     }
     setModalopen(false);
   };
+  
+  const handle_SHOW_RES = (message: any) => {
+    setPlayer3Valids((prev) => [...prev, message.valids]);
+    const validImages = new Set(message.valids.map((card: Card) => card.image));
+    const restValuesAfterValids = playercards.filter(item => !validImages.has(item.image));
+    setPlayerCards(restValuesAfterValids);
+  
+    console.log(restValuesAfterValids);
+  };
+  
 
   const give_card_back = (e: React.MouseEvent<HTMLDivElement>, card: Card) => {
     e.stopPropagation(); // Prevent event propagation
@@ -201,7 +211,7 @@ const Board: React.FC = () => {
         </DragDropContext>
       ) : (
         <div className='grid grid-cols-3 w-full h-full'>
-          {player3valids.map((ca, i) => (
+          {player3valids?.map((ca, i) => (
             <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
               {ca.map((cs, j) => (
                 <div className='flex border-2 border-black' key={j}>
