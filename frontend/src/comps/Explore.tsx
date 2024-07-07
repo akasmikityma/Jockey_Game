@@ -32,6 +32,7 @@ const Explore = () => {
             const istheresocketpresent=players.includes(meplayer)
         console.log(`meplayer :${istheresocketpresent}`)
         }
+        console.log(players.length)
         const socketpres=players.includes(socket);
         console.log(`socket :${socketpres}`)
         console.log(messages);

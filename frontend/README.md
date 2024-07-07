@@ -137,7 +137,14 @@ minor issues --> player clicking on the given_backs knows what he wants to get .
              [if the set is not valid /less than length make the setselecteds empty] is the move incremented once the player successfully put valids to the overall set
              --> think of rearranging the board/players >>
 
+             see jockey --get the width/height fixed of the cards when there are less in the div than 8 -- 
+
              
 
+major -- how do players put cards to another player's valid sets .. how do they get validated -- how are they included .. 
+      -- how do i end the game .. 1st once there is atleast one player that has no cards in the hands ... 
 
+      -- one's valid sets are not visible to others ..
 
+      after validation also when the player next time picks a card and adds ... all the previous cards[now at the validset] comes back ..[possibly the showres issue]
+      

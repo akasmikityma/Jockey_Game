@@ -19,12 +19,12 @@ const Board: React.FC = () => {
   const [player3valids, setPlayer3Valids] = useRecoilState(pl3_Valids);
   const [player4valids, setPlayer4Valids] = useRecoilState(pl4_Valids);
   const [clickedBy, setClickedBy] = useState('');
-  const [players, setPlayers] = useRecoilState(gamePlayers);
+  const [players, setPlayers] = useState(0);
   const [makingSet,setMakingSet]=useState(false)
   const [selectedforset,setselectedforset]=useRecoilState(selectedCards);
   
   useEffect(() => {
-    console.log(`players in the game: ${JSON.stringify(players)}`);
+    
     if (mePlayer) {
       mePlayer.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -53,7 +53,8 @@ const Board: React.FC = () => {
           case "showRes":
             console.log(message)
             handle_SHOW_RES(message)
-              
+          case "join":
+            setPlayers(message.noOFplayers)
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
@@ -64,6 +65,7 @@ const Board: React.FC = () => {
         }
       };
     }
+    console.log(`players in the game: ${JSON.stringify(players)}`);
   }, [mePlayer]);
   
   //handleDragEnd-------
@@ -93,11 +95,14 @@ const Board: React.FC = () => {
   
   const handle_SHOW_RES = (message: any) => {
     setPlayer3Valids((prev) => [...prev, message.valids]);
-    const validImages = new Set(message.valids.map((card: Card) => card.image));
-    const restValuesAfterValids = playercards.filter(item => !validImages.has(item.image));
-    setPlayerCards(restValuesAfterValids);
+    setPlayerCards(message.cardsleftIn_hands);
+    
+    // console.log(player3valids)
+    // const validImages = new Set(message.valids.map((card: Card) => card.image));
+    // const restValuesAfterValids = playercards.filter(item => !validImages.has(item.image));
+    // setPlayerCards(restValuesAfterValids);
   
-    console.log(restValuesAfterValids);
+    // console.log(restValuesAfterValids);
   };
   
 
@@ -180,17 +185,17 @@ const Board: React.FC = () => {
         </div>
 
         {/* Player 3 - Current Player */}
-        <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4/5 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
+        <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 ${playercards.length<=4?`w-1/3`:`w-4/5 h-64`} rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-visible mt-4`}>
       {openCards ? (
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="playercards" direction="horizontal">
             {(provided) => (
-              <div className='flex overflow-auto w-full' {...provided.droppableProps} ref={provided.innerRef} >
+              <div className='flex overflow-auto w-full ' {...provided.droppableProps} ref={provided.innerRef} >
                 {playercards.map((C, i) => (
                   <Draggable key={C.image} draggableId={C.image} index={i}>
                     {(provided) => (
                       <div
-                      className={`${makingSet ? `border-4 border-red-600` : `border-2`} ${isSected(C)?`border-yellow-500`:``}`}
+                      className={`${makingSet ? `border-4 border-red-600` : `border-2`} ${isSected(C)?`border-yellow-500`:``} select-none p-2 mr-2 mb-0 min-h-36 bg-white overflow-visible rounded-md`}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -200,16 +205,16 @@ const Board: React.FC = () => {
                         }}
                         
                         onContextMenu={(e)=>settingValids(e,C)}
-                        style={{ 
-                          userSelect: 'none',
-                          padding: '8px',
-                          margin: '0 8px 0 0',
-                          minHeight: '50px',
-                          backgroundColor: '#fff',
-                          ...provided.draggableProps.style,
-                        }}
+                        // style={{ 
+                        //   userSelect: 'none',
+                        //   padding: '8px',
+                        //   margin: '0 8px 0 0',
+                        //   minHeight: '50px',
+                        //   backgroundColor: '#fff',
+                        //   ...provided.draggableProps.style,
+                        // }}
                       >
-                        <img src={C.image} alt=""/>
+                        <img src={C.image} alt="" className='w-full h-full flex items-center'/>
                       </div>
                     )}
                   </Draggable>

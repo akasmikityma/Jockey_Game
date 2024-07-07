@@ -16,11 +16,13 @@ export const Socket_ME=atom({
 export const plyers_InHands=atom({
     key:"inHandCardsOfPlayer1",
     default:<Card[]>[{ key: 's', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/pj.png' },
-        { key: 's', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p10.png' },{ key: 'h', card: 'Q', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sq.png' },
+        { key: 's', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p10.png' },
+        { key: 'h', card: 'Q', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sq.png' },
+        { key: 'h', card: 'K', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sk.png' }, 
+        { key: 'c', card: 'A', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/ka.png' },
         { key: 'h', card: 'K', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sk.png' }, { key: 'c', card: 'A', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/ka.png' },
-        { key: 'c', card: 'Q', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/kq.png' },
-        { key: 'c', card: 'K', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/kk.png' },
-        { key: 'c', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/kj.png' },]
+        { key: 'h', card: 'K', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/sk.png' },
+       ]
 }) 
 
 // export const getATom=atomFamily({

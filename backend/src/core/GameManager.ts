@@ -302,6 +302,7 @@ export class GameManager {
                         break;
                     case "showSet":
                         this.handleShowSet(socket, set);
+                        currGame.incrementMoveCount()
                         break;
                     case "giveback":
                         if (currGame.isAwaitingGiveBack() && card) {
@@ -348,7 +349,9 @@ export class GameManager {
             this.games.push(game);
             this.pendingPlayers = [];
             for (const player of game.Players) {
-                player.send(JSON.stringify({ msg: "Game initialized. Please send 'start' to begin." }));
+                player.send(JSON.stringify({ type:"join",msg: "Game initialized. Please send 'start' to begin.",
+                    noOFplayers:game.Players.length,
+                 }));
             }
         } else {
             socket.send(JSON.stringify({ msg: "Not enough players to start the game. Please wait for more players to join." }));
@@ -426,10 +429,16 @@ export class GameManager {
         const currentPlayer = this.findPlayerInGame(socket);
         if (setValidator(set)) {
             if(currentPlayer && currGame){
+                //valid set ke player in hands cards gulo theke baad dite hobe >>
+                const validImages = new Set(set.map((card: card) => card.image));
+                const restINHads =currentPlayer.cards.filter(item=>!validImages.has(item.image))
+                currentPlayer.cards=restINHads;
+                console.log(`now the rest cards :${restINHads}`)
                 currentPlayer.valids=set
             currGame?.board.validSets.push(set);
             currentPlayer?.send(JSON.stringify({
                 type:"showRes",
+                cardsleftIn_hands:currentPlayer.cards,
                 valids:currentPlayer.valids,
                 allValids:currGame?.board.validSets
             }));
