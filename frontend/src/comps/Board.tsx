@@ -22,6 +22,7 @@ const Board: React.FC = () => {
   const [players, setPlayers] = useState(0);
   const [makingSet,setMakingSet]=useState(false)
   const [selectedforset,setselectedforset]=useRecoilState(selectedCards);
+  const [seeJocky,setSeejockey]=useState(false);
   
   useEffect(() => {
     
@@ -255,15 +256,16 @@ const Board: React.FC = () => {
         </div>
 
         {boardRemainings && (
-          <div className='absolute top-1/4 left-1/3' onClick={() => {
-            if(modalopen===true){
-              alert(`You have to take or leave the card`)
+          <div className='absolute top-1/4 left-1/3 cursor-pointer' onContextMenu={(e)=>{
+            e.preventDefault()
+            if(player3valids.flat().length>=3){
+              setSeejockey((prev)=>!prev)
             }else{
-              setModalopen(true)
+              alert(`u need to have a valid set first`)
             }
-            setClickedBy('remaining');
+            
           }}>
-            {Array.from({ length }).map((_, index) => (
+            {Array.from({ length:boardRemainings.length+1 }).map((_, index) => (
               <div
                 key={index}
                 className='bg-black h-20 w-12 rounded-sm absolute border border-white mt-2'
@@ -272,10 +274,25 @@ const Board: React.FC = () => {
                   right: `${index * 1}px`,
                   zIndex: length - index,
                 }}
+                onClick={() => {
+                 if(boardRemainings.length===0){
+                  mePlayer?.send(JSON.stringify({
+                    type:"takefromrem"
+                  }))
+                 }else{
+                  if(modalopen===true){
+                    alert(`You have to take or leave the card`)
+                  }else{
+                    setModalopen(true)
+                  }
+                  setClickedBy('remaining');
+                 }
+                }}
+                
               ></div>
             ))}
           </div>
-        )}
+        )}  
 
         {given_back_cards?.length > 0 && (
           <div className='absolute top-1/4 right-1/3 flex items-center' onClick={() => {
@@ -303,6 +320,7 @@ const Board: React.FC = () => {
         )}
 
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
+        {seeJocky&&<JockeyModal/>}
       </div>
 
       {/* Player indicators */}
@@ -371,5 +389,13 @@ const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Car
     </div>
   );
 };
-
+const JockeyModal=()=>{
+  return (
+    <div className='z-50'>
+      <div>
+        <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/p10.png" alt="" />
+      </div>
+    </div>
+  )
+}
 export default Board;

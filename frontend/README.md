@@ -146,5 +146,5 @@ major -- how do players put cards to another player's valid sets .. how do they 
 
       -- one's valid sets are not visible to others ..
 
-      after validation also when the player next time picks a card and adds ... all the previous cards[now at the validset] comes back ..[possibly the showres issue]
+       dont have to give a button but maybe a right click >>
       

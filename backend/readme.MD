@@ -86,5 +86,3 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
              [today]-->
              -when the player validates a set and add one eventually to the greater array of sets that player's move must be over ..[increment the game move ]
              -all the remainings are used then make the given-backs the remainings 
-
-             the in hand cards are not reduced from the backend >> get them out from there and the issue is most probably solved 

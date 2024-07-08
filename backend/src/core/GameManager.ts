@@ -386,6 +386,11 @@ export class GameManager {
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);
         if (currGame && currentPlayer) {
+            if(currGame.board.leftOutCards.length===0){
+                // make the givenbacks the leftoutCards >>
+                currGame.board.leftOutCards=currGame.board.givenBackCards;
+                currGame.board.givenBackCards=[]
+            }
             const card = currGame.board.leftOutCards.pop();
             if (card) {
                 currentPlayer.cards.push(card);
@@ -476,6 +481,10 @@ export class GameManager {
         const currGame = this.findGameByPlayerSocket(socket);
         if (currentPlayer && currGame) {
             // currentPlayer.cards = currentPlayer.cards.filter(c => c.key !== card.key || c.card !== card.card);
+            if(currGame.board.leftOutCards.length===0){
+                currGame.board.leftOutCards=currGame.board.givenBackCards;
+                currGame.board.givenBackCards=[]
+            }
             const this_card=currGame.board.leftOutCards.pop();
             if(this_card){
                 currGame.board.givenBackCards.push(this_card);
