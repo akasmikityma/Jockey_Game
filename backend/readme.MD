@@ -84,5 +84,4 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
               **the remaing cards are not shuffled so after the cards are distributed run the shuffle again to the remaining ones ..
             
              [today]-->
-             -when the player validates a set and add one eventually to the greater array of sets that player's move must be over ..[increment the game move ]
-             -all the remainings are used then make the given-backs the remainings 
+             fix the board [one player must see all the other's valids so that its cards can be pushed to their sets (if valid)] -- jockey card  -- 

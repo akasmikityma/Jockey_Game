@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSocketHook } from '../store/useSocketHook';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { plyers_InHands, gamePlayers, Socket_ME, remainingCards } from '../store/atoms';
+import { plyers_InHands, gamePlayers, Socket_ME, remainingCards, JockeyOftheGame } from '../store/atoms';
 import { useWebSocket } from '../store/ContextProviderer';
 
 const Explore = () => {
@@ -13,28 +13,14 @@ const Explore = () => {
     const meplayer=useRecoilValue(Socket_ME);
     const [messages, setMessages] = useState<string[]>([]);
     const socket = useWebSocket()
-
+    const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
     const getToGame = () => {
         navigate(`/?socket=${socket}`);
     };
-
-    // useEffect(() => {
-    //     if (socket) {
-    //         setThisSocket(socket);
-    //     }
-    // }, [socket]);
-
     useEffect(() => {
         if (!socket) {
             return;
         }
-        if(meplayer){
-            const istheresocketpresent=players.includes(meplayer)
-        console.log(`meplayer :${istheresocketpresent}`)
-        }
-        console.log(players.length)
-        const socketpres=players.includes(socket);
-        console.log(`socket :${socketpres}`)
         console.log(messages);
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -45,12 +31,15 @@ const Explore = () => {
                     getToGame();
                     setcardsINHands(message.msg);
                     setgamesLeftout(message.remainingCards)
+                    setJockey(message.Jockey)
+                    setPlayers(message.totalplayers);
                     break;
                 case "join":
                     console.log(`in case of join message-type`);
+                    // setPlayers(message.noOFplayers);
                     break;
                 case "init_game":
-                    setPlayers((prev) => [...prev, socket]);
+                    
                     break;
                 default:
                     break;

@@ -5,9 +5,12 @@ import { Card } from "./Cards";
 //validSets -Card[][]
 export const gamePlayers=atom({
     key:"players_in_the_game",
-    default:<WebSocket[]>[]
+    default:0
 })
-
+export const JockeyOftheGame=atom<Card>({
+    key:"theJockeyOftheGame",
+    default:{ key: 'd', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' }
+})
 export const Socket_ME=atom({
     key:"ultimate_Player",
     default:<WebSocket|null>null

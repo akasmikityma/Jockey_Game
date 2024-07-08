@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards } from '../store/atoms';
+import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { given_backs, pl1_Valids, pl2_Valids, pl3_Valids, pl4_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame } from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
@@ -19,11 +19,11 @@ const Board: React.FC = () => {
   const [player3valids, setPlayer3Valids] = useRecoilState(pl3_Valids);
   const [player4valids, setPlayer4Valids] = useRecoilState(pl4_Valids);
   const [clickedBy, setClickedBy] = useState('');
-  const [players, setPlayers] = useState(0);
+  const players = useRecoilValue(JockeyOftheGame);
   const [makingSet,setMakingSet]=useState(false)
   const [selectedforset,setselectedforset]=useRecoilState(selectedCards);
   const [seeJocky,setSeejockey]=useState(false);
-  
+  const jockeyCard=useRecoilValue(JockeyOftheGame);
   useEffect(() => {
     
     if (mePlayer) {
@@ -54,8 +54,8 @@ const Board: React.FC = () => {
           case "showRes":
             console.log(message)
             handle_SHOW_RES(message)
-          case "join":
-            setPlayers(message.noOFplayers)
+          // case "join":
+          //   setPlayers(message.noOFplayers)
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
@@ -320,7 +320,7 @@ const Board: React.FC = () => {
         )}
 
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
-        {seeJocky&&<JockeyModal/>}
+        {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
       </div>
 
       {/* Player indicators */}
@@ -339,6 +339,7 @@ const Board: React.FC = () => {
           set:selectedforset
       }))
       alert(`set put to validation`)
+      setselectedforset([])
        }else if(makingSet && selectedforset.length<3){
         setselectedforset([])
         alert(`u have to at least select 3 cards`)
@@ -389,11 +390,11 @@ const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Car
     </div>
   );
 };
-const JockeyModal=()=>{
+const JockeyModal:React.FC<{jockeyCard:Card}>=({jockeyCard})=>{
   return (
     <div className='z-50'>
       <div>
-        <img src="https://www.improvemagic.com/wp-content/uploads/2020/11/p10.png" alt="" />
+        <img src={jockeyCard.image} alt="" />
       </div>
     </div>
   )

@@ -374,7 +374,8 @@ export class GameManager {
                         type: "start",
                         msg: currGame.Players[i].cards,
                         remainingCards: currGame.board.leftOutCards,
-                        Jockey: `The Jockey of The Game: ${currGame.Jockey}`
+                        Jockey: currGame.Jockey,
+                        totalplayers:currGame.Players.length
                     }));
                 }
                 this.broadcastGameState(currGame);
