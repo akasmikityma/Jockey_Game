@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSocketHook } from '../store/useSocketHook';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { plyers_InHands, gamePlayers, Socket_ME, remainingCards, JockeyOftheGame } from '../store/atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { plyers_InHands, gamePlayers, Socket_ME, remainingCards, JockeyOftheGame, RealJockey } from '../store/atoms';
 import { useWebSocket } from '../store/ContextProviderer';
 
 const Explore = () => {
@@ -13,6 +13,7 @@ const Explore = () => {
     const meplayer=useRecoilValue(Socket_ME);
     const [messages, setMessages] = useState<string[]>([]);
     const socket = useWebSocket()
+    const setRealJockey=useSetRecoilState(RealJockey)
     const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
     const getToGame = () => {
         navigate(`/?socket=${socket}`);
@@ -31,8 +32,9 @@ const Explore = () => {
                     getToGame();
                     setcardsINHands(message.msg);
                     setgamesLeftout(message.remainingCards)
-                    setJockey(message.Jockey)
+                    setJockey(message.JockyDecider)
                     setPlayers(message.totalplayers);
+                    setRealJockey(message.Jockey)
                     break;
                 case "join":
                     console.log(`in case of join message-type`);

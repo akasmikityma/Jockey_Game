@@ -229,6 +229,7 @@
 
 
 import { DistributingCards, flatten_Cards, getJockey, setValidator } from "../GameMechanics";
+import { isWildcardSubarray } from "../setValidatorPro";
 import { Game, plr } from "./Game";
 import WebSocket from "ws";
 import { card } from "../CardsAll";
@@ -366,7 +367,10 @@ export class GameManager {
             if (currGame && currGame.allPlayersStarted()) {
                 const shuffledCardsArr = DistributingCards(currGame.Players.length, flatten_Cards);
                 currGame.remainingCards = shuffledCardsArr.remainingElements;
-                currGame.Jockey = getJockey(currGame.remainingCards);
+                const decider=getJockey(currGame.remainingCards).lastCard
+                currGame.Jockey = getJockey(currGame.remainingCards).Jockey;
+                console.log(currGame.Jockey)
+               
                 currGame.board.leftOutCards = shuffledCardsArr.remainingElements.slice(0, -1);
                 for (let i = 0; i < currGame.Players.length; i++) {
                     currGame.Players[i].cards = shuffledCardsArr.playerArrays[i];
@@ -374,6 +378,7 @@ export class GameManager {
                         type: "start",
                         msg: currGame.Players[i].cards,
                         remainingCards: currGame.board.leftOutCards,
+                        JockyDecider:decider,
                         Jockey: currGame.Jockey,
                         totalplayers:currGame.Players.length
                     }));
@@ -433,7 +438,8 @@ export class GameManager {
     private handleShowSet(socket: WebSocket, set: card[]) {
         const currGame = this.findGameByPlayerSocket(socket);
         const currentPlayer = this.findPlayerInGame(socket);
-        if (setValidator(set)) {
+        //@ts-ignore
+        if (isWildcardSubarray(set,currGame?.Jockey)) {
             if(currentPlayer && currGame){
                 //valid set ke player in hands cards gulo theke baad dite hobe >>
                 const validImages = new Set(set.map((card: card) => card.image));

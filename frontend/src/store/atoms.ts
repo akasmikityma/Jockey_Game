@@ -7,6 +7,10 @@ export const gamePlayers=atom({
     key:"players_in_the_game",
     default:0
 })
+export const RealJockey=atom({
+    key:"therealJockey",
+    default:<Card|null>null
+})
 export const JockeyOftheGame=atom<Card>({
     key:"theJockeyOftheGame",
     default:{ key: 'd', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' }
@@ -15,7 +19,10 @@ export const Socket_ME=atom({
     key:"ultimate_Player",
     default:<WebSocket|null>null
 })
-
+export const setIntheModal=atom({
+    key:"theCardsIntheModal",
+    default:<Card[]>[]
+})
 export const plyers_InHands=atom({
     key:"inHandCardsOfPlayer1",
     default:<Card[]>[{ key: 's', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/pj.png' },
@@ -70,7 +77,10 @@ export const pl4_Valids=atom({
     { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
     ]]
 })
-
+export const allvalids=atom({
+    key:"allValidsintheGame",
+    default:<Card[][]>[]
+})
 export const selectedCards=atom({
     key:"selectedForValidSets",
     default:<Card[]>[]
@@ -84,3 +94,5 @@ export const given_backs=atom({
     key:"game's_GivenBackCards",
     default:<Card[]>[]
 })
+
+//startgame,takefromrem,takefromgb,showset,giveback,leaveCard,leaveCardFromgb

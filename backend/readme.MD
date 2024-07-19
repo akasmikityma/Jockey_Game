@@ -83,5 +83,6 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
 
               **the remaing cards are not shuffled so after the cards are distributed run the shuffle again to the remaining ones ..
             
-             [today]-->
-             fix the board [one player must see all the other's valids so that its cards can be pushed to their sets (if valid)] -- jockey card  -- 
+             
+             /// not all the cards are in all the games that are currently running in the server/being played
+             /// incorporate the jockey to the game -- one must use the jocky to make the valid  sets and all 

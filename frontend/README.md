@@ -140,11 +140,25 @@ minor issues --> player clicking on the given_backs knows what he wants to get .
              see jockey --get the width/height fixed of the cards when there are less in the div than 8 -- 
 
              
+             [today]-->
+             fix the board [one player must see all the other's valids so that its cards can be pushed to their sets (if valid)] -- jockey card [done] -- 
 
 major -- how do players put cards to another player's valid sets .. how do they get validated -- how are they included .. 
       -- how do i end the game .. 1st once there is atleast one player that has no cards in the hands ... 
-
+        
+        
       -- one's valid sets are not visible to others ..
 
        dont have to give a button but maybe a right click >>
       
+
+      today--> 
+      >get the set of the current player not shown in the others too .. 
+      >players should be able to use the jockey ..[done 1/2]
+      >even if the players can validate their lol cards to other sets .. how is it the card dragged and dropped .. how the cards are reduced >>
+       -- clicking on any set would open a modal that has the set .. that modal ideally should be draggable-droppable -- then open the cards and drag from ur cards and drop that to the modal .. click on validate -- if validated card gets removed from the cardsInhands and gets added to the set instead >>
+
+       i) make a modal 
+       ii)get the cards of that set in the modal >> 
+       iii)think of how drag and drop can be done !
+        

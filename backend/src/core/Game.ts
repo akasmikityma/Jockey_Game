@@ -70,7 +70,7 @@ class Board {
 export class Game {
     public Players: plr[];
     public remainingCards: card[];
-    public Jockey: string | number | card;
+    public Jockey: string | number;
     public board: Board;
     public moveCount: number;
     private awaitingGiveBack: boolean;

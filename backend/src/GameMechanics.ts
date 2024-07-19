@@ -50,33 +50,30 @@ const CreateRandom=(start:number,end:number)=>{
     const ans= Math.floor(Math.random()*end)
     return ans
 }
-const sequence=['A',2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
-export const getJockey=(restElements:card[])=>{
-    const last_obj=restElements[restElements.length-1];
-    console.log(last_obj)
+export const sequence=['A',2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
+export const getJockey=(restElements:card[]):{lastCard:card,Jockey:any}=>{
+    const lastCard=restElements[restElements.length-1];
+    console.log(lastCard)
+    let Jockey
     for(let i=0;i<sequence.length;i++){
-        if(last_obj?.card===sequence[i]){
-            return sequence[i+1];
+        if(lastCard?.card===sequence[i]){
+            Jockey= sequence[i+1];
         }
     }
-    return last_obj;
+    return {lastCard,Jockey};
 }
-export const setValidator = (arr: card[]): boolean => {
-    // Edge case: if the array length is less than 3, it cannot be a valid set
+
+//----method to validate a set --------
+export const setValidator = (arr: card[],Jockey:string|number): boolean => {
+    
     if (arr.length < 3) return false;
 
-    // Helper function to check if the set is sequential
+   
     const isSequentialSet = (arr: card[]): boolean => {
-        const sequenceMap = new Map(sequence.map((card, index) => [card, index]));
-        // Extract the card values and map them to their indices in the sequence
-        const cardIndices = arr.map(card => sequenceMap.get(card.card)).filter(index => index !== undefined);
-
-        // If any card is not found in the sequence, it's not a valid sequential set
-        if (cardIndices.length !== arr.length) return false;
-
-        // Sort the indices and check if they form a consecutive sequence
+        const sequenceMap = new Map(sequence.map((card, index) => [card, index]));  
+        const cardIndices = arr.map(card => sequenceMap.get(card.card)).filter(index => index !== undefined);     
+        if (cardIndices.length !== arr.length) return false;   
         cardIndices.sort((a, b) => a! - b!);
-
         for (let i = 1; i < cardIndices.length; i++) {
             if (cardIndices[i]! !== cardIndices[i - 1]! + 1) {
                 return false;
@@ -85,7 +82,7 @@ export const setValidator = (arr: card[]): boolean => {
         return true;
     };
 
-    // Helper function to check if all cards are the same
+    
     const isSameCardsSet = (arr: card[]): boolean => {
         const firstCard = arr[0].card;
         return arr.every(card => card.card === firstCard);
@@ -94,5 +91,14 @@ export const setValidator = (arr: card[]): boolean => {
     return isSequentialSet(arr) || isSameCardsSet(arr);
 };
 
+// const result=setValidator([
+//     { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
+//     { key: 's', card: 7, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p7.png' },
+//     { key: 'd', card: 4, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/l4.png' },
+//     { key: 's', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p9.png' },
+//     { key: 's', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p10.png' },
+    
+// ],4)
+// console.log(result)
 // const playerCardshere=DistributingCards(4,flatten_Cards).playerArrays;
 // console.log(playerCardshere)
