@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal } from '../store/atoms';
+import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal, OpenOptions, toPutWhere } from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
 import { DragDropContext,Draggable,Droppable, DraggableId} from 'react-beautiful-dnd';
+
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   const [length, setLength] = useState<number>(10);
@@ -15,9 +16,6 @@ const Board: React.FC = () => {
   const [given_back_cards, setGivenBackCards] = useRecoilState(given_backs);
   const [boardRemainings, setBoardRemainigs] = useRecoilState(remainingCards);
   const [playercards, setPlayerCards] = useRecoilState(plyers_InHands);
-  // const [player1valids, setPlayer1Valids] = useRecoilState(pl1_Valids);
-  // const [player2valids, setPlayer2Valids] = useRecoilState(pl2_Valids);
-  // const [player4valids, setPlayer4Valids] = useRecoilState(pl4_Valids);
   const [player3valids, setPlayer3Valids] = useRecoilState(pl3_Valids);
   const [clickedBy, setClickedBy] = useState('');
   const players = useRecoilValue(gamePlayers);
@@ -29,6 +27,9 @@ const Board: React.FC = () => {
   const [allthevalids,setAlltheValids]=useRecoilState(allvalids)
   const [isModalOpen,setisModalOpen]=useState(false)
   const setSetintheModal=useSetRecoilState(setIntheModal)
+//  const toPutWhereValue=useRecoilValue(toPutWhere)
+//   const setOptionsValue=useSetRecoilState(OpenOptions)
+  const [OpenOptions,setOpenOptions]=useState(false);
   useEffect(() => {
     
     if (mePlayer) {
@@ -156,7 +157,14 @@ const Board: React.FC = () => {
       }
     }
   };
-
+ const putCardToset=(card: Card,value:string)=>{
+   //get the card to either to the beginning of the set or to the end>>
+     if(value==='start'){
+      setSetintheModal((prev)=>[card,...prev])
+     }else{
+      setSetintheModal((prev)=>[...prev,card])
+     }
+ }
   const isSected=(card:Card)=>{
     const value=selectedforset.includes(card);
     return value;
@@ -220,18 +228,25 @@ const Board: React.FC = () => {
                           console.log('Double click event triggered');
                           give_card_back(e, C);
                         }}
-                        
-                        onContextMenu={(e)=>settingValids(e,C)}
-                        // style={{ 
-                        //   userSelect: 'none',
-                        //   padding: '8px',
-                        //   margin: '0 8px 0 0',
-                        //   minHeight: '50px',
-                        //   backgroundColor: '#fff',
-                        //   ...provided.draggableProps.style,
-                        // }}
+                       onContextMenu={(e)=>{
+                        if(makingSet){
+                          settingValids(e, C);
+                        }else{
+                         setOpenOptions(prev=>!prev)
+                          
+                        }
+                        e.preventDefault()
+                       }}
+                      
                       >
                         <img src={C.image} alt="" className='w-full h-full flex items-center'/>
+                        {
+                            OpenOptions&& 
+                            <div className='z-50 flex flex-row'>
+                            <button className='p-2  bg-blue-400 text-white font-bold rounded-md' onClick={()=>putCardToset(C,'start')}>start</button>
+                            <button className='p-2 bg-yellow-500 text-white font-bold rounded-md' onClick={()=>putCardToset(C,'end')}>end</button>
+                          </div>
+                        }
                       </div>
                     )}
                   </Draggable>
@@ -338,7 +353,8 @@ const Board: React.FC = () => {
 
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
         {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
-        {isModalOpen && <SetModal/>}
+        {isModalOpen && <SetModal putFunction={()=>putCardToset}/>}
+        
       </div>
 
       {/* Player indicators */}
@@ -369,14 +385,40 @@ const Board: React.FC = () => {
   );
 };
 
-
-const SetModal:React.FC<{}>=()=>{
+const StartOrend=()=>{
+  return (
+    <div className='z-50 flex flex-row'>
+      <button className='p-2 bg-blue-400 text-white font-bold rounded-md'>start</button>
+      <button className='p-2 bg-yellow-500 text-white font-bold rounded-md'>end</button>
+    </div>
+  ) 
+}
+const SetModal:React.FC<{putFunction:()=>void}>=(putFunction)=>{
   const Modalset=useRecoilValue(setIntheModal)
+  const submitON=useState(false)
+  const setToPutWhere=useSetRecoilState(toPutWhere)
   console.log(Modalset)
   return (
-    <div>
-      this isthe modalset 
-     {JSON.stringify(Modalset)}
+    <div className='bg border-8 border-black bg-green-800 w-full h-1/2 z-50 rounded-lg shadow-lg shadow-black'>
+    <div className='flex flex-col w-full h-full justify-center items-center'>
+    <div className={`flex flex-row w-full ${submitON?`h-4/5`:'h-full'}`}>
+    {
+      Modalset&&Modalset.map((m,i)=>{
+        return <div className=' h-full  w-full border-black p-4 ' key={i}>
+          <img src={m.image} alt="" className={`${submitON?`w-4/5`:'w-full'} h-full bg-white p-4 rounded-md`}/>
+        </div>
+      })
+     }
+    </div>
+   {/* {
+    OptionsValue&&
+    <div className='flex gap-4'>
+    <button className='p-2 bg-blue-400 text-white font-bold rounded-md' onClick={(e)=>putFunction(e,)}>start</button>
+    <button className='p-2 bg-yellow-500 text-white font-bold rounded-md' onClick={(e)=>setToPutWhere('end')}>end</button>
+  </div>
+   } */}
+    <button>submit</button>
+    </div>
     </div>
   )
 }
