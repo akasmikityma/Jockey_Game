@@ -37,14 +37,25 @@ import { sequence } from "./GameMechanics";
     
 //     return false;
 // }
- export function isWildcardSubarray(subArray: card[], wildcard: string | number): boolean {
+export function isWildcardSubarray(subArray: card[], wildcard: string | number): boolean {
+    if (!subArray) {
+        console.error('subArray is undefined');
+        return false;
+    }
+
+    if (!Array.isArray(subArray)) {
+        console.error('subArray is not an array:', subArray);
+        return false;
+    }
+
+    if (subArray.length === 0) {
+        console.warn('subArray is empty');
+        return true;
+    }
+
     const mainLength = sequence.length;
     const updated_subarray = subArray.map(c => c.card);
     const subLength = updated_subarray.length;
-
-    if (subLength === 0) {
-        return true;
-    }
 
     if (subLength > mainLength) {
         return false;

@@ -313,13 +313,16 @@ export class GameManager {
                             currentPlayer.send(JSON.stringify({ msg: "You need to take a card first!" }));
                         }
                         break;
-                        case "leaveCard":   
-                                this.handleLeaveCard(socket);
-                                currGame.incrementMoveCount();
-                        break;
-                        case "leaveFormGB":
-                            this.handleLeaveCardfromGB(socket);
+                    case "leaveCard":   
+                            this.handleLeaveCard(socket);
                             currGame.incrementMoveCount();
+                        break;
+                    case "leaveFormGB":
+                        this.handleLeaveCardfromGB(socket);
+                        currGame.incrementMoveCount();
+                    case "addCardtoSet":
+                        this.handleAddCardToset(socket,set);
+                        currGame.incrementMoveCount();
                     default:
                         console.log("Unknown message type:", type);
                 }
@@ -358,7 +361,7 @@ export class GameManager {
             socket.send(JSON.stringify({ msg: "Not enough players to start the game. Please wait for more players to join." }));
         }
     }
-
+   
     private handleStartGame(socket: WebSocket) {
         const currentPlayer = this.findPlayerInGame(socket);
         if (currentPlayer) {
@@ -465,7 +468,92 @@ export class GameManager {
           }))
         }
     }
-
+    
+    // private handleAddCardToset(socket:WebSocket,set:card[]){
+    //     //get if any card from this set is matched to another card of any set from the valid sets .. then remove that set and add this set if validated >>
+    //     const currentPlayer = this.findPlayerInGame(socket);
+    //     const currGame = this.findGameByPlayerSocket(socket);
+    //     //@ts-ignore
+    //     if(isWildcardSubarray(set,currGame?.Jockey)){
+    //         //change the .valids of the respective game and update the cards in the hands of the current player>>
+    //        if(currGame&&currentPlayer){
+    //         const mainArr=currGame?.board.validSets;
+    //         const another=set;
+    //         const Updated_valid_sets=mainArr?.map(subarr=>{
+    //             const hasCard=subarr.some(item=>another.includes(item));
+    //             return hasCard?another:subarr
+    //         })
+    //         console.log(` now the valid sets : ${JSON.stringify(Updated_valid_sets)}`)
+    //        // update the cards in the hands of the player>>
+    //        const validImages = new Set(set.map((card: card) => card.image));
+    //        const restINHads =currentPlayer.cards.filter(item=>!validImages.has(item.image))
+    //        //since both the cards in the hands and the valids are now updated just send the message to the player >>
+    //        currGame.board.validSets=Updated_valid_sets;
+    //        console.log(currGame.board.validSets)
+    //        currentPlayer.cards=restINHads
+    //        currentPlayer?.send(JSON.stringify({
+    //             type:"addCardRes",
+    //             cardsleftIn_hands:currentPlayer.cards,
+    //             valids:currentPlayer.valids,
+    //             allValids:currGame?.board.validSets
+    //             }));
+    //             this.broadcastGameState(currGame)
+    //        }
+    //     }else{
+    //         currentPlayer?.send(JSON.stringify({
+    //             msg:"the set is not valid in either the arrangement or Jockey is not valid"
+    //         }))
+    //     }
+    // }
+    private handleAddCardToset(socket: WebSocket, set: card[]) {
+        const currentPlayer = this.findPlayerInGame(socket);
+        const currGame = this.findGameByPlayerSocket(socket);
+    
+        if (currGame && currentPlayer) {
+            if (!set || !Array.isArray(set)) {
+                console.error('Invalid set passed to handleAddCardToset:', set);
+                return;
+            }
+    
+            // @ts-ignore
+            if (isWildcardSubarray(set, currGame?.Jockey)) {
+                const mainArr = currGame.board.validSets;
+                const another = set;
+    
+                console.log('Original valid sets:', JSON.stringify(mainArr));
+                console.log('New set to add:', JSON.stringify(another));
+    
+                const Updated_valid_sets = mainArr?.map(subarr => {
+                    const hasCard = subarr.some(item => another.some(newItem => newItem.image === item.image));
+                    return hasCard ? another : subarr;
+                });
+    
+                console.log('Updated valid sets:', JSON.stringify(Updated_valid_sets));
+    
+                currGame.board.validSets = Updated_valid_sets;
+    
+                const validImages = new Set(set.map((card: card) => card.image));
+                const restINHads = currentPlayer.cards.filter(item => !validImages.has(item.image));
+    
+                currentPlayer.cards = restINHads;
+    
+                currentPlayer.send(JSON.stringify({
+                    type: "addCardRes",
+                    cardsleftIn_hands: currentPlayer.cards,
+                    valids: currentPlayer.valids,
+                    allValids: currGame.board.validSets
+                }));
+    
+                this.broadcastGameState(currGame);
+            } else {
+                currentPlayer.send(JSON.stringify({
+                    msg: "the set is not valid in either the arrangement or Jockey is not valid"
+                }));
+            }
+        }
+    }
+    
+    
     private handleGiveBack(socket: WebSocket, card: card) {
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);

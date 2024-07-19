@@ -162,3 +162,7 @@ major -- how do players put cards to another player's valid sets .. how do they 
        ii)get the cards of that set in the modal >> 
        iii)think of how drag and drop can be done !
         
+
+>>test if the leavecard is working or not >> 
+>>try to first give some alert that your turn has done >> 
+>> [BIG] alert every one when the game has ended .. [check on the backend if any player's cardsInhands have gone empty just broadcast that the game is over ]

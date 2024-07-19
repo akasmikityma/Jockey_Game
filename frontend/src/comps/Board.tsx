@@ -29,6 +29,7 @@ const Board: React.FC = () => {
   const setSetintheModal=useSetRecoilState(setIntheModal)
 //  const toPutWhereValue=useRecoilValue(toPutWhere)
 //   const setOptionsValue=useSetRecoilState(OpenOptions)
+const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
   useEffect(() => {
     
@@ -63,6 +64,10 @@ const Board: React.FC = () => {
             handle_SHOW_RES(message)
           // case "join":
           //   setPlayers(message.noOFplayers)
+          case "addCardRes":
+            console.log(message);
+            setAlltheValids(message.allValids)
+            setPlayerCards(message.cardsleftIn_hands);
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
@@ -108,13 +113,6 @@ const Board: React.FC = () => {
   const handle_SHOW_RES = (message: any) => {
     setPlayer3Valids((prev) => [...prev, message.valids]);
     setPlayerCards(message.cardsleftIn_hands);
-    
-    // console.log(player3valids)
-    // const validImages = new Set(message.valids.map((card: Card) => card.image));
-    // const restValuesAfterValids = playercards.filter(item => !validImages.has(item.image));
-    // setPlayerCards(restValuesAfterValids);
-  
-    // console.log(restValuesAfterValids);
   };
   
 
@@ -157,6 +155,15 @@ const Board: React.FC = () => {
       }
     }
   };
+
+  const sendAddMessage=(cards:Card[])=>{
+    mePlayer?.send(JSON.stringify({
+      type:"addCardtoSet",
+      set:cards
+    }))
+  }
+
+  
  const putCardToset=(card: Card,value:string)=>{
    //get the card to either to the beginning of the set or to the end>>
      if(value==='start'){
@@ -220,34 +227,34 @@ const Board: React.FC = () => {
                   <Draggable key={C.image} draggableId={C.image} index={i}>
                     {(provided) => (
                       <div
-                      className={`${makingSet ? `border-4 border-red-600` : `border-2`} ${isSected(C)?`border-yellow-500`:``} select-none p-2 mr-2 mb-0 min-h-36 bg-white overflow-visible rounded-md`}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        onDoubleClick={(e) => {
-                          console.log('Double click event triggered');
-                          give_card_back(e, C);
-                        }}
-                       onContextMenu={(e)=>{
+                      className={`${makingSet ? `border-4 border-red-600` : `border-2`} ${isSected(C)?`border-yellow-500`:``} select-none p-2 mr-2 mb-0 min-h-36 bg-white overflow-visible rounded-md relative`}
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      onDoubleClick={(e) => {
+                        console.log('Double click event triggered');
+                        give_card_back(e, C);
+                      }}
+                      onContextMenu={(e)=>{
                         if(makingSet){
                           settingValids(e, C);
                         }else{
-                         setOpenOptions(prev=>!prev)
-                          
+                          setclickedCardRight(C)
+                          setOpenOptions(prev=>!prev)  
                         }
                         e.preventDefault()
-                       }}
-                      
-                      >
-                        <img src={C.image} alt="" className='w-full h-full flex items-center'/>
-                        {
-                            OpenOptions&& 
-                            <div className='z-50 flex flex-row'>
-                            <button className='p-2  bg-blue-400 text-white font-bold rounded-md' onClick={()=>putCardToset(C,'start')}>start</button>
-                            <button className='p-2 bg-yellow-500 text-white font-bold rounded-md' onClick={()=>putCardToset(C,'end')}>end</button>
-                          </div>
-                        }
-                      </div>
+                      }}
+                    >
+                      <img src={C.image} alt="" className='w-full h-full flex items-center'/>
+                      {
+                            (clickedCardRight === C && OpenOptions) && (
+                              <div className='z-50 flex flex-row absolute bottom-0 left-0'>
+                                <button className='px-2 py-1 bg-blue-400 text-white font-bold rounded-md' onClick={() => putCardToset(C, 'start')}>start</button>
+                                <button className='px-2 py-1 bg-yellow-500 text-white font-bold rounded-md' onClick={() => putCardToset(C, 'end')}>end</button>
+                              </div>
+                            )
+                       }
+                    </div>
                     )}
                   </Draggable>
                 ))}
@@ -353,7 +360,10 @@ const Board: React.FC = () => {
 
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
         {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
-        {isModalOpen && <SetModal putFunction={()=>putCardToset}/>}
+        {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
+
+
+
         
       </div>
 
@@ -385,43 +395,34 @@ const Board: React.FC = () => {
   );
 };
 
-const StartOrend=()=>{
-  return (
-    <div className='z-50 flex flex-row'>
-      <button className='p-2 bg-blue-400 text-white font-bold rounded-md'>start</button>
-      <button className='p-2 bg-yellow-500 text-white font-bold rounded-md'>end</button>
-    </div>
-  ) 
-}
-const SetModal:React.FC<{putFunction:()=>void}>=(putFunction)=>{
-  const Modalset=useRecoilValue(setIntheModal)
-  const submitON=useState(false)
-  const setToPutWhere=useSetRecoilState(toPutWhere)
-  console.log(Modalset)
+const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpener: React.Dispatch<React.SetStateAction<boolean>>}> = ({ sedMessageAddCard ,modalOpener}) => {
+  const Modalset = useRecoilValue(setIntheModal);
+  const [submitON,setSubmitON] = useState(false);
+  
+  console.log(Modalset);
+  
   return (
     <div className='bg border-8 border-black bg-green-800 w-full h-1/2 z-50 rounded-lg shadow-lg shadow-black'>
-    <div className='flex flex-col w-full h-full justify-center items-center'>
-    <div className={`flex flex-row w-full ${submitON?`h-4/5`:'h-full'}`}>
-    {
-      Modalset&&Modalset.map((m,i)=>{
-        return <div className=' h-full  w-full border-black p-4 ' key={i}>
-          <img src={m.image} alt="" className={`${submitON?`w-4/5`:'w-full'} h-full bg-white p-4 rounded-md`}/>
+      <div className='flex flex-col w-full h-full justify-center items-center'>
+        <div className={`flex flex-row w-full ${submitON ? 'h-4/5' : 'h-full'}`}>
+          {Modalset && Modalset.map((m, i) => (
+            <div className='h-full w-full border-black p-4' key={i}>
+              <img src={m.image} alt="" className={`${submitON ? 'w-4/5' : 'w-full'} h-5/6 bg-white p-4 rounded-md`} />
+            </div>
+          ))}
         </div>
-      })
-     }
+        <button className='pb-4' onClick={() => {
+          // send a new message and listen that in the backend
+          sedMessageAddCard(Modalset);
+          modalOpener((prev)=>!prev)
+        }}>
+          submit
+        </button>
+      </div>
     </div>
-   {/* {
-    OptionsValue&&
-    <div className='flex gap-4'>
-    <button className='p-2 bg-blue-400 text-white font-bold rounded-md' onClick={(e)=>putFunction(e,)}>start</button>
-    <button className='p-2 bg-yellow-500 text-white font-bold rounded-md' onClick={(e)=>setToPutWhere('end')}>end</button>
-  </div>
-   } */}
-    <button>submit</button>
-    </div>
-    </div>
-  )
-}
+  );
+};
+
 
 const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({  clickedby, takefunc, remainings, giveCardBack }) => {
   const [topCard, setTopCard] = useState<Card>();
