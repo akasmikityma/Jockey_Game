@@ -48,11 +48,13 @@ export const plyers_InHands=atom({
 
 export const pl1_Valids=atom({
     key:"player1Valids",
-    default:<Card[][]>[[
-        { key: 'd', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
-    { key: 'd', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
-    { key: 'd', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
-    ]]
+    default:<Card[][]>[
+        // [
+        //     { key: 'd', card: 'J', image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
+        // { key: 'd', card: 10, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
+        // { key: 'd', card: 9, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/la.png' },
+        // ]
+    ]
 }) 
 export const pl2_Valids=atom({
     key:"Player2_valids",
@@ -86,11 +88,13 @@ export const pl4_Valids=atom({
 })
 export const allvalids=atom({
     key:"allValidsintheGame",
-    default:<Card[][]>[[
-        { key: 's', card: 8, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p8.png' },
-        { key: 's', card: 7, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p7.png' },
-        { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
-    ]]
+    default:<Card[][]>[
+    //     [
+    //     { key: 's', card: 8, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p8.png' },
+    //     { key: 's', card: 7, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p7.png' },
+    //     { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
+    // ]
+]
 })
 export const selectedCards=atom({
     key:"selectedForValidSets",

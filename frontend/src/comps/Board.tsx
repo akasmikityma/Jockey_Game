@@ -112,7 +112,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   };
   
   const handle_SHOW_RES = (message: any) => {
-    // setPlayer3Valids((prev) => [...prev, message.valids]);
+    setPlayer3Valids((prev) => [...prev, message.valids]);
     setPlayerCards(message.cardsleftIn_hands);
   };
   
@@ -180,13 +180,18 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const openModalofset=()=>{
       setisModalOpen(prev=>!prev)
   }
+
+  const firstThreeValids = allthevalids.slice(0, 3);
+  const nextThreeValids = allthevalids.slice(3, 6);
+  const remainingValids = allthevalids.slice(6);
+
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
         {/* Player 1 */}
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-4/5 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
           <div className='grid grid-cols-3 w-full h-full'>
-            {allthevalids.length<=6&&allthevalids.map((ca, i) => (
+            {firstThreeValids.map((ca, i) => (
               <div className='w-2/3 h-4/5 flex gap-0.5' key={i} onClick={()=>{
                 alert('clicked on a set')
                 openModalofset();
@@ -205,8 +210,14 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {/* Player 2 */}
         <div className='absolute top-1/2 right-0 transform -translate-y-1/2 w-1/2 h-1/5 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
           <div className='grid grid-cols-3 w-full h-full'>
-            {(allthevalids.length>6&&allthevalids.length<=12)&&allthevalids.map((ca, i) => (
-              <div className='w-full h-4/5 flex gap-0.5' key={i}>
+            {nextThreeValids.map((ca, i) => (
+              <div className='w-full h-4/5 flex gap-0.5' key={i}
+              onClick={()=>{
+                alert('clicked on a set')
+                openModalofset();
+                setSetintheModal(ca)
+              }}
+              >
                 {ca.map((cs, j) => (
                   <div className='flex border-2 border-black' key={j}>
                     <img src={cs.image} alt="" className='w-full h-full' />
@@ -249,7 +260,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
                       <img src={C.image} alt="" className='w-full h-full flex items-center'/>
                       {
                             (clickedCardRight === C && OpenOptions) && (
-                              <div className='z-50 flex flex-row absolute bottom-0 left-0'>
+                              <div className='z-50 flex flex-row absolute bottom-10 justify-around left-0'>
                                 <button className='px-2 py-1 bg-blue-400 text-white font-bold rounded-md' onClick={() => putCardToset(C, 'start')}>start</button>
                                 <button className='px-2 py-1 bg-yellow-500 text-white font-bold rounded-md' onClick={() => putCardToset(C, 'end')}>end</button>
                               </div>
@@ -265,24 +276,25 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           </Droppable>
         </DragDropContext>
       ) : (
-        <div className='grid grid-cols-3 w-full h-full'>
-          {player3valids&&player3valids?.map((ca, i) => (
-            <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
-              {ca.map((cs, j) => (
-                <div className='flex border-2 border-black' key={j}>
-                  <img src={cs.image} alt="" className='w-full h-full' />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+        // <div className='grid grid-cols-3 w-full h-full'>
+        //   {player3valids&&player3valids?.map((ca, i) => (
+        //     <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
+        //       {ca.map((cs, j) => (
+        //         <div className='flex border-2 border-black' key={j}>
+        //           <img src={cs.image} alt="" className='w-full h-full' />
+        //         </div>
+        //       ))}
+        //     </div>
+        //   ))}
+        // </div>
+        <div></div>
       )}
     </div>
 
         {/* Player 4 */}
         <div className='absolute top-1/2 left-0 transform -translate-y-1/2 w-1/2 h-1/6 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden mt-4'>
           <div className='grid grid-cols-3 w-full h-full'>
-            {allthevalids.map((ca, i) => (
+            {remainingValids.map((ca, i) => (
               <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
                 {ca.map((cs, j) => (
                   <div className='flex border-2 border-black' key={j}>
