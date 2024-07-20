@@ -29,6 +29,7 @@ const Board: React.FC = () => {
   const setSetintheModal=useSetRecoilState(setIntheModal)
 //  const toPutWhereValue=useRecoilValue(toPutWhere)
 //   const setOptionsValue=useSetRecoilState(OpenOptions)
+ const [youLose,setyouLose]=useState(false)
 const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
   useEffect(() => {
@@ -111,7 +112,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   };
   
   const handle_SHOW_RES = (message: any) => {
-    setPlayer3Valids((prev) => [...prev, message.valids]);
+    // setPlayer3Valids((prev) => [...prev, message.valids]);
     setPlayerCards(message.cardsleftIn_hands);
   };
   
@@ -265,7 +266,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         </DragDropContext>
       ) : (
         <div className='grid grid-cols-3 w-full h-full'>
-          {player3valids?.map((ca, i) => (
+          {player3valids&&player3valids?.map((ca, i) => (
             <div className='w-2/3 h-4/5 flex gap-0.5' key={i}>
               {ca.map((cs, j) => (
                 <div className='flex border-2 border-black' key={j}>
@@ -361,8 +362,8 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
         {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
         {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
-
-
+        {youLose&&<WinDisclaimer Text={"You Lose"}/>}
+        {playercards.length===0&& <WinDisclaimer Text='You Win..'/>}
 
         
       </div>
@@ -423,6 +424,22 @@ const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpen
   );
 };
 
+const WinDisclaimer:React.FC<{Text:string}>=({Text})=>{
+  const [isFlashing, setIsFlashing] = useState(true);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsFlashing((prev) => !prev);
+    }, 500);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [])
+  return (
+    <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
+      <h1 className='font-extrabold text-2xl'>{Text}</h1>
+    </div>
+  )
+}
 
 const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({  clickedby, takefunc, remainings, giveCardBack }) => {
   const [topCard, setTopCard] = useState<Card>();

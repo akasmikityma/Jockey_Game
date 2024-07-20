@@ -15,6 +15,7 @@ const Explore = () => {
     const socket = useWebSocket()
     const setRealJockey=useSetRecoilState(RealJockey)
     const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
+    const [name,setName]=useState('')
     const getToGame = () => {
         navigate(`/?socket=${socket}`);
     };
@@ -52,9 +53,10 @@ const Explore = () => {
     return (
         <div className='flex min-h-screen bg-slate-500 justify-center items-center flex-col gap-10'>
             <div className='flex gap-4'>
+                <input type="text" placeholder='name' value={name} onChange={(e)=>setName(e.target.value)}/>
                 <button className='p-4 text-white bg-black' onClick={() => {
                     console.log(`button clicked`);
-                    socket?.send(JSON.stringify({ type: "init_game" }));
+                    socket?.send(JSON.stringify({ type: "init_game",name:name }));
                 }}>init_game</button>
                 <button className='p-4 text-white bg-black' onClick={() => {
                     console.log(`join clicked`);
