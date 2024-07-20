@@ -86,3 +86,10 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
              
              /// not all the cards are in all the games that are currently running in the server/being played
              /// incorporate the jockey to the game -- one must use the jocky to make the valid  sets and all 
+
+
+            // leavrFromGB has bugs .. it doesnt work most of the times>>
+             check on the {showset,addcardToSet} requests if there are no cards after fulfilling the request [puttin set to the validSets/adding card to existing Validsets] if there is none broadcase the winners name .. have that name in a state and put that to the WinLose Component >>
+
+
+               have a gap between the valids in the player 2 valids and a bit bigger >>

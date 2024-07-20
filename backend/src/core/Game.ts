@@ -49,12 +49,17 @@
 import { WebSocket } from "ws";
 import { card } from "../CardsAll";
 
+// export interface plr extends WebSocket {
+//     cards: card[];
+//     hasStarted: boolean;
+//     valids:card[]
+// }
 export interface plr extends WebSocket {
+    name:string;
     cards: card[];
     hasStarted: boolean;
     valids:card[]
 }
-
 class Board {
     public leftOutCards: card[];
     public givenBackCards: card[];
@@ -68,6 +73,7 @@ class Board {
 }
 
 export class Game {
+    public Winner:string;
     public Players: plr[];
     public remainingCards: card[];
     public Jockey: string | number;
@@ -76,6 +82,7 @@ export class Game {
     private awaitingGiveBack: boolean;
 
     constructor(players: plr[]) {
+        this.Winner=''
         this.Players = players;
         this.remainingCards = [];
         this.Jockey = '';

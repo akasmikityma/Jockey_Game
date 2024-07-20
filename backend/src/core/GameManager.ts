@@ -265,7 +265,7 @@ export class GameManager {
             }
 
             console.log(messageData);
-            const { type, set, card } = messageData;
+            const { type, set, card ,name} = messageData;
             const currentPlayer = this.findPlayerInGame(socket);
             const currGame = this.findGameByPlayerSocket(socket);
 
@@ -277,7 +277,7 @@ export class GameManager {
 
                 switch (type) {
                     case "init_game":
-                        this.handleInitGame(socket);
+                        this.handleInitGame(socket,name);
                         break;
                     case "join":
                         this.handleJoinGame(socket);
@@ -329,7 +329,7 @@ export class GameManager {
             } else {
                 switch (type) {
                     case "init_game":
-                        this.handleInitGame(socket);
+                        this.handleInitGame(socket,name);
                         break;
                     case "join":
                         this.handleJoinGame(socket);
@@ -341,10 +341,10 @@ export class GameManager {
         });
     }
 
-    private handleInitGame(socket: WebSocket) {
-        const newPlayer: plr = Object.assign(socket, { cards: [], hasStarted: false ,valids:[]});
+    private handleInitGame(socket: WebSocket,name:string) {
+        const newPlayer: plr = Object.assign(socket, { name:name,cards: [], hasStarted: false ,valids:[]});
         this.pendingPlayers.push(newPlayer);
-        console.log(`Player added. Total pending players: ${this.pendingPlayers.length}`);
+        console.log(`Player added with name: ${newPlayer.name}. Total pending players: ${this.pendingPlayers.length}`);
     }
 
     private handleJoinGame(socket: WebSocket) {
@@ -448,6 +448,10 @@ export class GameManager {
                 const validImages = new Set(set.map((card: card) => card.image));
                 const restINHads =currentPlayer.cards.filter(item=>!validImages.has(item.image))
                 currentPlayer.cards=restINHads;
+                if(restINHads.length===0){
+                    currGame.Winner=currentPlayer.name
+                    this.broadcastGameState(currGame)
+                }else{
                 console.log(`now the rest cards :${restINHads}`)
                 currentPlayer.valids=set
             currGame?.board.validSets.push(set);
@@ -458,6 +462,7 @@ export class GameManager {
                 allValids:currGame?.board.validSets
             }));
             this.broadcastGameState(currGame)
+        }
         }
             // if(currGame){
                 
@@ -534,8 +539,12 @@ export class GameManager {
     
                 const validImages = new Set(set.map((card: card) => card.image));
                 const restINHads = currentPlayer.cards.filter(item => !validImages.has(item.image));
-    
+                
                 currentPlayer.cards = restINHads;
+                if(restINHads.length===0){
+                    currGame.Winner=currentPlayer.name
+                    this.broadcastGameState(currGame);
+                }else{
     
                 currentPlayer.send(JSON.stringify({
                     type: "addCardRes",
@@ -545,6 +554,7 @@ export class GameManager {
                 }));
     
                 this.broadcastGameState(currGame);
+            }
             } else {
                 currentPlayer.send(JSON.stringify({
                     msg: "the set is not valid in either the arrangement or Jockey is not valid"
@@ -615,7 +625,8 @@ export class GameManager {
             type: "gameStateUpdate",
             remainingCards: game.board.leftOutCards,
             givenBackCards: game.board.givenBackCards,
-            validSets:game.board.validSets
+            validSets:game.board.validSets,
+            Winner:game.Winner
         };
         for (const player of game.Players) {
             player.send(JSON.stringify(gameState));
