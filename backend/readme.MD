@@ -92,4 +92,15 @@ and whenever the remaining cards are empty do i shuffle the given_back cards bef
              check on the {showset,addcardToSet} requests if there are no cards after fulfilling the request [puttin set to the validSets/adding card to existing Validsets] if there is none broadcase the winners name .. have that name in a state and put that to the WinLose Component >>
 
 
+              
+              
+              -----------task----------
+              
                have a gap between the valids in the player 2 valids and a bit bigger >>
+
+                ---- whenever a player puts sets back to back it means the turn of the next player is getting consumed by the current player . 
+               >>
+               -- have a button somewhere that says "OVER" when clicked then only the turn is over ..[but in the cases where the player is neither taking a card nor leaving a card ]
+               -- the cards length is 4 then player cant add there no longer >> change that 
+
+

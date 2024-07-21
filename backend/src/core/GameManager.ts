@@ -447,11 +447,11 @@ export class GameManager {
                 //valid set ke player in hands cards gulo theke baad dite hobe >>
                 const validImages = new Set(set.map((card: card) => card.image));
                 const restINHads =currentPlayer.cards.filter(item=>!validImages.has(item.image))
+                console.log(JSON.stringify(restINHads))
                 currentPlayer.cards=restINHads;
-                if(restINHads.length===0){
+                if(currentPlayer.cards.length===0){
                     currGame.Winner=currentPlayer.name
-                    this.broadcastGameState(currGame)
-                }else{
+                }
                 console.log(`now the rest cards :${restINHads}`)
                 currentPlayer.valids=set
             currGame?.board.validSets.push(set);
@@ -462,7 +462,7 @@ export class GameManager {
                 allValids:currGame?.board.validSets
             }));
             this.broadcastGameState(currGame)
-        }
+        
         }
             // if(currGame){
                 
@@ -473,43 +473,7 @@ export class GameManager {
           }))
         }
     }
-    
-    // private handleAddCardToset(socket:WebSocket,set:card[]){
-    //     //get if any card from this set is matched to another card of any set from the valid sets .. then remove that set and add this set if validated >>
-    //     const currentPlayer = this.findPlayerInGame(socket);
-    //     const currGame = this.findGameByPlayerSocket(socket);
-    //     //@ts-ignore
-    //     if(isWildcardSubarray(set,currGame?.Jockey)){
-    //         //change the .valids of the respective game and update the cards in the hands of the current player>>
-    //        if(currGame&&currentPlayer){
-    //         const mainArr=currGame?.board.validSets;
-    //         const another=set;
-    //         const Updated_valid_sets=mainArr?.map(subarr=>{
-    //             const hasCard=subarr.some(item=>another.includes(item));
-    //             return hasCard?another:subarr
-    //         })
-    //         console.log(` now the valid sets : ${JSON.stringify(Updated_valid_sets)}`)
-    //        // update the cards in the hands of the player>>
-    //        const validImages = new Set(set.map((card: card) => card.image));
-    //        const restINHads =currentPlayer.cards.filter(item=>!validImages.has(item.image))
-    //        //since both the cards in the hands and the valids are now updated just send the message to the player >>
-    //        currGame.board.validSets=Updated_valid_sets;
-    //        console.log(currGame.board.validSets)
-    //        currentPlayer.cards=restINHads
-    //        currentPlayer?.send(JSON.stringify({
-    //             type:"addCardRes",
-    //             cardsleftIn_hands:currentPlayer.cards,
-    //             valids:currentPlayer.valids,
-    //             allValids:currGame?.board.validSets
-    //             }));
-    //             this.broadcastGameState(currGame)
-    //        }
-    //     }else{
-    //         currentPlayer?.send(JSON.stringify({
-    //             msg:"the set is not valid in either the arrangement or Jockey is not valid"
-    //         }))
-    //     }
-    // }
+
     private handleAddCardToset(socket: WebSocket, set: card[]) {
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);
@@ -539,12 +503,11 @@ export class GameManager {
     
                 const validImages = new Set(set.map((card: card) => card.image));
                 const restINHads = currentPlayer.cards.filter(item => !validImages.has(item.image));
-                
+                console.log(JSON.stringify(restINHads))
                 currentPlayer.cards = restINHads;
-                if(restINHads.length===0){
+                if(currentPlayer.cards.length===0){
                     currGame.Winner=currentPlayer.name
-                    this.broadcastGameState(currGame);
-                }else{
+                }
     
                 currentPlayer.send(JSON.stringify({
                     type: "addCardRes",
@@ -554,7 +517,7 @@ export class GameManager {
                 }));
     
                 this.broadcastGameState(currGame);
-            }
+            
             } else {
                 currentPlayer.send(JSON.stringify({
                     msg: "the set is not valid in either the arrangement or Jockey is not valid"

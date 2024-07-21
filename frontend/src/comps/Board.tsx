@@ -29,6 +29,7 @@ const Board: React.FC = () => {
   const setSetintheModal=useSetRecoilState(setIntheModal)
 //  const toPutWhereValue=useRecoilValue(toPutWhere)
 //   const setOptionsValue=useSetRecoilState(OpenOptions)
+ const [Winner,setWinner]=useState('');
  const [youLose,setyouLose]=useState(false)
 const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
@@ -59,16 +60,19 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             setBoardRemainigs(message.remainingCards);
             setGivenBackCards(message.givenBackCards);
             setAlltheValids(message.validSets)
+            setWinner(message.Winner)
+            loserSetter(message.Winner, message.cardsleftIn_hands);
             break;
           case "showRes":
-            console.log(message)
+            console.log(message.msg)
             handle_SHOW_RES(message)
           // case "join":
           //   setPlayers(message.noOFplayers)
           case "addCardRes":
-            console.log(message);
+            console.log(message.msg);
             setAlltheValids(message.allValids)
             setPlayerCards(message.cardsleftIn_hands);
+            // setWinner(message.Winner)
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
@@ -114,6 +118,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const handle_SHOW_RES = (message: any) => {
     setPlayer3Valids((prev) => [...prev, message.valids]);
     setPlayerCards(message.cardsleftIn_hands);
+    // setWinner(message.Winner);
   };
   
 
@@ -164,7 +169,12 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
     }))
   }
 
-  
+  const loserSetter = (winner:string, cards:Card[]) => {
+    if (winner.length > 0 && cards.length !== 0) {
+      setyouLose(true);
+    }
+  };
+
  const putCardToset=(card: Card,value:string)=>{
    //get the card to either to the beginning of the set or to the end>>
      if(value==='start'){
@@ -209,9 +219,9 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
 
         {/* Player 2 */}
         <div className='absolute top-1/2 right-0 transform -translate-y-1/2 w-1/2 h-1/5 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
-          <div className='grid grid-cols-3 w-full h-full'>
+          <div className='grid grid-cols-3 w-full h-full '>
             {nextThreeValids.map((ca, i) => (
-              <div className='w-full h-4/5 flex gap-0.5' key={i}
+              <div className='w-5/6 h-5/6 flex gap-0.5' key={i}
               onClick={()=>{
                 alert('clicked on a set')
                 openModalofset();
@@ -374,7 +384,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
         {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
         {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
-        {youLose&&<WinDisclaimer Text={"You Lose"}/>}
+        {youLose&&<WinDisclaimer winner={Winner} Text={"You Lose"}/>}
         {playercards.length===0&& <WinDisclaimer Text='You Win..'/>}
 
         
@@ -408,7 +418,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   );
 };
 
-const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpener: React.Dispatch<React.SetStateAction<boolean>>}> = ({ sedMessageAddCard ,modalOpener}) => {
+const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpener: React.Dispatch<React.SetStateAction<boolean>>,}> = ({ sedMessageAddCard ,modalOpener}) => {
   const Modalset = useRecoilValue(setIntheModal);
   const [submitON,setSubmitON] = useState(false);
   
@@ -417,26 +427,29 @@ const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpen
   return (
     <div className='bg border-8 border-black bg-green-800 w-full h-1/2 z-50 rounded-lg shadow-lg shadow-black'>
       <div className='flex flex-col w-full h-full justify-center items-center'>
-        <div className={`flex flex-row w-full ${submitON ? 'h-4/5' : 'h-full'}`}>
+        <div className={`flex flex-row w-3/4 h-4/5`}>
           {Modalset && Modalset.map((m, i) => (
             <div className='h-full w-full border-black p-4' key={i}>
               <img src={m.image} alt="" className={`${submitON ? 'w-4/5' : 'w-full'} h-5/6 bg-white p-4 rounded-md`} />
             </div>
           ))}
         </div>
-        <button className='pb-4' onClick={() => {
+       <div className='flex flex-row gap-4 '>
+       <button className='px-2 py-1 bg-blue-700 hover:bg-slate-500 text-white font-bold rounded-md shadow-black shadow-md' onClick={() => {
           // send a new message and listen that in the backend
           sedMessageAddCard(Modalset);
           modalOpener((prev)=>!prev)
         }}>
           submit
         </button>
+        <button className='px-2 py-1 bg-yellow-700 hover:bg-slate-500 text-black font-bold rounded-md shadow-black shadow-md' onClick={()=>modalOpener(prev=>!prev)}>close</button>
+       </div>
       </div>
     </div>
   );
 };
 
-const WinDisclaimer:React.FC<{Text:string}>=({Text})=>{
+const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
   const [isFlashing, setIsFlashing] = useState(true);
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -449,6 +462,7 @@ const WinDisclaimer:React.FC<{Text:string}>=({Text})=>{
   return (
     <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
       <h1 className='font-extrabold text-2xl'>{Text}</h1>
+      {winner&&<h1>{`the Winner ${winner}`}</h1>}
     </div>
   )
 }
