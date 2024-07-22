@@ -16,6 +16,18 @@ const shuffleTheCards=(flatten_Cards:card[])=>{
     return flatten_Cards;
 }
 
+export const JustShuffle=(cards:card[])=>{
+    const shuffledDeck = [...cards];
+
+    // Fisher-Yates shuffle algorithm
+    for (let i = shuffledDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]]; // Swap elements
+    }
+  
+    return shuffledDeck;
+}
+
 export const DistributingCards = (players: number, The_Array: card[]): { playerArrays: card[][], remainingElements: card[] } => {
     if (players < 1 || players > 5) {
         throw new Error("Number of players must be between 1 and 5");
@@ -102,3 +114,6 @@ export const setValidator = (arr: card[],Jockey:string|number): boolean => {
 // console.log(result)
 // const playerCardshere=DistributingCards(4,flatten_Cards).playerArrays;
 // console.log(playerCardshere)
+
+// const shuffled=JustShuffle(flatten_Cards);
+// console.log(shuffled);

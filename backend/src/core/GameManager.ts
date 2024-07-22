@@ -227,7 +227,7 @@
 //     }
 // }
 
-
+import { JustShuffle } from "../GameMechanics";
 import { DistributingCards, flatten_Cards, getJockey, setValidator } from "../GameMechanics";
 import { isWildcardSubarray } from "../setValidatorPro";
 import { Game, plr } from "./Game";
@@ -303,7 +303,7 @@ export class GameManager {
                         break;
                     case "showSet":
                         this.handleShowSet(socket, set);
-                        currGame.incrementMoveCount()
+                        // currGame.incrementMoveCount()
                         break;
                     case "giveback":
                         if (currGame.isAwaitingGiveBack() && card) {
@@ -320,9 +320,14 @@ export class GameManager {
                     case "leaveFormGB":
                         this.handleLeaveCardfromGB(socket);
                         currGame.incrementMoveCount();
+                        break;
                     case "addCardtoSet":
                         this.handleAddCardToset(socket,set);
+                        // currGame.incrementMoveCount();
+                        break;
+                    case "moveOver":
                         currGame.incrementMoveCount();
+                        break;
                     default:
                         console.log("Unknown message type:", type);
                 }
@@ -397,7 +402,9 @@ export class GameManager {
         if (currGame && currentPlayer) {
             if(currGame.board.leftOutCards.length===0){
                 // make the givenbacks the leftoutCards >>
-                currGame.board.leftOutCards=currGame.board.givenBackCards;
+                 const newRemainings=JustShuffle(currGame.board.givenBackCards);
+                // currGame.board.leftOutCards=currGame.board.givenBackCards;
+                currGame.board.leftOutCards=newRemainings
                 currGame.board.givenBackCards=[]
             }
             const card = currGame.board.leftOutCards.pop();
@@ -575,7 +582,7 @@ export class GameManager {
            
             currentPlayer.send(JSON.stringify({ msg: `I'm giving this card back: ${JSON.stringify(currGame.board.givenBackCards[currGame.board.givenBackCards.length-1])}` }));
             currentPlayer.send(JSON.stringify({
-                type: "afterleave",
+                type: "afterleavefromGB",
                 msg: currentPlayer.cards,
                 givenBacks: currGame.board.givenBackCards
             }));

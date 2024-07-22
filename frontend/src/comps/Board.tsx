@@ -1,6 +1,6 @@
 
-
-import React, { useEffect, useState } from 'react';
+import button from '../../button.mp3'
+import React, { useEffect, useState,useRef } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal, OpenOptions, toPutWhere } from '../store/atoms';
 import { Card } from '../store/Cards';
@@ -33,6 +33,7 @@ const Board: React.FC = () => {
  const [youLose,setyouLose]=useState(false)
 const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
+  const audioRef = useRef(null);
   useEffect(() => {
     
     if (mePlayer) {
@@ -76,7 +77,11 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
-            setGivenBackCards(message.givenBackCards);
+            setGivenBackCards(message.givenBacks);
+            break;
+          case "afterleavefromGB":
+            setPlayerCards(message.msg);
+            setGivenBackCards(message.givenBacks);
             break;
           default:
             console.log(message.type);
@@ -190,6 +195,17 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const openModalofset=()=>{
       setisModalOpen(prev=>!prev)
   }
+  
+  const handleClick = () => {
+    mePlayer?.send(JSON.stringify({ type: 'moveOver' }));
+    if (audioRef.current) {
+      //@ts-ignore
+      audioRef.current.play().catch(error => {
+        console.error("Audio playback failed:", error);
+      });
+    }
+    alert(`your move's over`);
+  };
 
   const firstThreeValids = allthevalids.slice(0, 3);
   const nextThreeValids = allthevalids.slice(3, 6);
@@ -197,6 +213,10 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
 
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
+      <div className='top-0 right-0 absolute p-8'> 
+      <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleClick}>over</button>
+      <audio ref={audioRef} src={button}></audio>
+      </div>
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
         {/* Player 1 */}
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 w-4/5 h-1/4 rounded-xl text-center font-bold p-2 flex gap-4 justify-center items-center overflow-hidden'>
@@ -391,7 +411,9 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
       </div>
 
       {/* Player indicators */}
-     
+     {/* <div  className='absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
+     <button>over</button>
+     </div> */}
       <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
         
        <div className='flex flex-row gap-2'>
