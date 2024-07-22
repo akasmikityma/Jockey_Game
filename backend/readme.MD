@@ -63,44 +63,11 @@ game rules-- except the last card all are for the game ..
                 showSet [push the valid set of the cards to the board.validsets]
 
 
-     how do i make the game end and again do the whole process ....
 
-how do i make sure players are moving one after another ..noOne moving twice or more back to back 
-and whenever the remaining cards are empty do i shuffle the given_back cards before assiginig to the remaining cards >>
-
-
-
- 
- in the game: 
-              1st>  players ui must be depending on how many players joining in >>
-              2nd>  the valid sets state should be populated as the game grows .. 
-
-
-              the cards -- are they repeating in different players hands /[done]
-              given backs should be updated and all []
-              how do i know that its my turn ?
-              player 4 shouldnt render if there are only 4 players joined in the game>>
-
-              **the remaing cards are not shuffled so after the cards are distributed run the shuffle again to the remaining ones ..
+             
             
              
-             /// not all the cards are in all the games that are currently running in the server/being played
-             /// incorporate the jockey to the game -- one must use the jocky to make the valid  sets and all 
+            
 
 
-            // leavrFromGB has bugs .. it doesnt work most of the times>>
-             check on the {showset,addcardToSet} requests if there are no cards after fulfilling the request [puttin set to the validSets/adding card to existing Validsets] if there is none broadcase the winners name .. have that name in a state and put that to the WinLose Component >>
-
-
-              
-              
-              -----------task----------
-              
-               have a gap between the valids in the player 2 valids and a bit bigger >>
-
-                ---- whenever a player puts sets back to back it means the turn of the next player is getting consumed by the current player . 
-               >>
-               -- have a button somewhere that says "OVER" when clicked then only the turn is over ..[but in the cases where the player is neither taking a card nor leaving a card ]
-               -- the cards length is 4 then player cant add there no longer >> change that 
-
-
+            

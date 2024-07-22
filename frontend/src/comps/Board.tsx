@@ -61,23 +61,29 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             setBoardRemainigs(message.remainingCards);
             setGivenBackCards(message.givenBackCards);
             setAlltheValids(message.validSets)
+            console.log(message.Winner)
             setWinner(message.Winner)
-            loserSetter(message.Winner, message.cardsleftIn_hands);
+            loserSetter(message.Winner, playercards);
             break;
           case "showRes":
             console.log(message.msg)
             handle_SHOW_RES(message)
           // case "join":
           //   setPlayers(message.noOFplayers)
+           break;
           case "addCardRes":
             console.log(message.msg);
             setAlltheValids(message.allValids)
             setPlayerCards(message.cardsleftIn_hands);
             // setWinner(message.Winner)
+            break;
           case "afterleave":
             console.log(message)
             setBoardRemainigs(message.remainingCards);
             setGivenBackCards(message.givenBacks);
+            break;
+          case "yourTurn":
+            alert(message.msg)
             break;
           case "afterleavefromGB":
             setPlayerCards(message.msg);
@@ -265,7 +271,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           <Droppable droppableId="playercards" direction="horizontal">
             {(provided) => (
               <div className='flex overflow-auto w-full ' {...provided.droppableProps} ref={provided.innerRef} >
-                {playercards.map((C, i) => (
+                {Array.isArray(playercards)&&playercards.map((C, i) => (
                   <Draggable key={C.image} draggableId={C.image} index={i}>
                     {(provided) => (
                       <div
@@ -406,8 +412,12 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
         {youLose&&<WinDisclaimer winner={Winner} Text={"You Lose"}/>}
         {playercards.length===0&& <WinDisclaimer Text='You Win..'/>}
-
-        
+        {/* {playercards.length===0?(
+          <WinDisclaimer Text='You Win..'/>
+        ):(
+        <WinDisclaimer winner={Winner} Text={"You Lose"}/>
+        )}
+         */}
       </div>
 
       {/* Player indicators */}
@@ -482,9 +492,9 @@ const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
     return () => clearInterval(intervalId);
   }, [])
   return (
-    <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
+    <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex flex-col justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
       <h1 className='font-extrabold text-2xl'>{Text}</h1>
-      {winner&&<h1>{`the Winner ${winner}`}</h1>}
+      {winner&&<h1 className='text-white font-bold'>{`the Winner ${winner}`}</h1>}
     </div>
   )
 }

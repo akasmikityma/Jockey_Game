@@ -226,6 +226,7 @@
 //         return undefined;
 //     }
 // }
+// -------------------------------------------------------------------------------------------------------------------------------------
 
 import { JustShuffle } from "../GameMechanics";
 import { DistributingCards, flatten_Cards, getJockey, setValidator } from "../GameMechanics";
@@ -309,6 +310,7 @@ export class GameManager {
                         if (currGame.isAwaitingGiveBack() && card) {
                             this.handleGiveBack(socket, card);
                             currGame.incrementMoveCount();
+                            this.handleTurnOver(currGame)
                         } else {
                             currentPlayer.send(JSON.stringify({ msg: "You need to take a card first!" }));
                         }
@@ -316,10 +318,12 @@ export class GameManager {
                     case "leaveCard":   
                             this.handleLeaveCard(socket);
                             currGame.incrementMoveCount();
+                            this.handleTurnOver(currGame)
                         break;
                     case "leaveFormGB":
                         this.handleLeaveCardfromGB(socket);
                         currGame.incrementMoveCount();
+                        this.handleTurnOver(currGame)
                         break;
                     case "addCardtoSet":
                         this.handleAddCardToset(socket,set);
@@ -327,6 +331,7 @@ export class GameManager {
                         break;
                     case "moveOver":
                         currGame.incrementMoveCount();
+                        this.handleTurnOver(currGame)
                         break;
                     default:
                         console.log("Unknown message type:", type);
@@ -344,6 +349,12 @@ export class GameManager {
                 }
             }
         });
+    }
+    
+    private handleTurnOver(game: Game) {
+        game.nextPlayer(); // Move to the next player
+        game.notifyCurrentPlayer(); // Notify the new current player
+        this.broadcastGameState(game); // Optionally broadcast the new game state
     }
 
     private handleInitGame(socket: WebSocket,name:string) {
@@ -623,3 +634,5 @@ export class GameManager {
         return undefined;
     }
 }
+
+
