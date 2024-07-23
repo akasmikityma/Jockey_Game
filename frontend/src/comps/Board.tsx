@@ -7,7 +7,7 @@ import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
 import { DragDropContext,Draggable,Droppable, DraggableId} from 'react-beautiful-dnd';
-
+import notseenJockeycard from '../../notseenJockeycard.png';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   const [length, setLength] = useState<number>(10);
@@ -27,15 +27,14 @@ const Board: React.FC = () => {
   const [allthevalids,setAlltheValids]=useRecoilState(allvalids)
   const [isModalOpen,setisModalOpen]=useState(false)
   const setSetintheModal=useSetRecoilState(setIntheModal)
-//  const toPutWhereValue=useRecoilValue(toPutWhere)
-//   const setOptionsValue=useSetRecoilState(OpenOptions)
+const [seenJockey,setseenJockey]=useState(false);
  const [Winner,setWinner]=useState('');
- const [youLose,setyouLose]=useState(false)
+const [gameEnded,setGameEnded]=useState(false);
 const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
   const audioRef = useRef(null);
   useEffect(() => {
-    
+    console.log(Winner.length)
     if (mePlayer) {
       mePlayer.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -63,7 +62,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             setAlltheValids(message.validSets)
             console.log(message.Winner)
             setWinner(message.Winner)
-            loserSetter(message.Winner, playercards);
+            gameEndedMethod(message.Winner);
             break;
           case "showRes":
             console.log(message.msg)
@@ -129,6 +128,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const handle_SHOW_RES = (message: any) => {
     setPlayer3Valids((prev) => [...prev, message.valids]);
     setPlayerCards(message.cardsleftIn_hands);
+    setseenJockey(true);
     // setWinner(message.Winner);
   };
   
@@ -179,13 +179,9 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
       set:cards
     }))
   }
-
-  const loserSetter = (winner:string, cards:Card[]) => {
-    if (winner.length > 0 && cards.length !== 0) {
-      setyouLose(true);
-    }
-  };
-
+ const gameEndedMethod=(winner:string)=>{
+   setGameEnded(winner.length>0)
+ }
  const putCardToset=(card: Card,value:string)=>{
    //get the card to either to the beginning of the set or to the end>>
      if(value==='start'){
@@ -235,7 +231,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
               }}>
                 {ca.map((cs, j) => (
                   <div className='flex border-2 border-black' key={j}>
-                    <img src={cs.image} alt="" className='w-full h-full' />
+                    <img src={`${(!seenJockey&&cs.card===realJockey)?notseenJockeycard:cs.image}`} alt="" className='w-full h-full' />
                   </div>
                 ))}
               </div>
@@ -410,20 +406,9 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
         {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
         {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
-        {youLose&&<WinDisclaimer winner={Winner} Text={"You Lose"}/>}
-        {playercards.length===0&& <WinDisclaimer Text='You Win..'/>}
-        {/* {playercards.length===0?(
-          <WinDisclaimer Text='You Win..'/>
-        ):(
-        <WinDisclaimer winner={Winner} Text={"You Lose"}/>
-        )}
-         */}
+        {playercards.length===0&&<WinDisclaimer winner={Winner} Text='You Won'/>}
+        {(gameEnded &&playercards.length!==0)&& <LoseDisclaimer winner={Winner} Text='You Lose'/>}
       </div>
-
-      {/* Player indicators */}
-     {/* <div  className='absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
-     <button>over</button>
-     </div> */}
       <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
         
        <div className='flex flex-row gap-2'>
@@ -480,7 +465,25 @@ const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpen
     </div>
   );
 };
+const LoseDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
+  const [isFlashing, setIsFlashing] = useState(true);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsFlashing((prev) => !prev);
+    }, 500);
 
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [])
+  return (
+  
+      <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex flex-col justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
+      <h1 className='font-extrabold text-2xl'>{Text}</h1>
+      {winner&&<h1 className='text-white font-bold'>{`the Winner - ${winner}`}</h1>}
+    </div>
+   
+  )
+}
 const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
   const [isFlashing, setIsFlashing] = useState(true);
   useEffect(() => {
@@ -494,7 +497,7 @@ const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
   return (
     <div className={`border-4 bg-slate-500 shadow-lg z-50 w-2/3 text-center shadow-black h-36 flex flex-col justify-center items-center ${isFlashing ? 'visible' : 'hidden'}`}>
       <h1 className='font-extrabold text-2xl'>{Text}</h1>
-      {winner&&<h1 className='text-white font-bold'>{`the Winner ${winner}`}</h1>}
+      {winner&&<h1 className='text-white font-bold'>{winner}</h1>}
     </div>
   )
 }
@@ -547,7 +550,7 @@ const JockeyModal:React.FC<{jockeyCard:Card}>=({jockeyCard})=>{
   )
 }
 export default Board;
-
+// -----------------------------------------------------------------------------------------------------------------
 
 // import React, { useEffect, useState } from 'react';
 // import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';

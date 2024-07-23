@@ -9,7 +9,7 @@ export const gamePlayers=atom({
 })
 export const RealJockey=atom({
     key:"therealJockey",
-    default:<Card|null>null
+    default:<string|number>0
 })
 export const JockeyOftheGame=atom<Card>({
     key:"theJockeyOftheGame",
@@ -114,7 +114,6 @@ export const pl4_Valids=atom({
 export const allvalids=atom({
     key:"allValidsintheGame",
     default:<Card[][]>[
-
 ]
 })
 export const selectedCards=atom({
