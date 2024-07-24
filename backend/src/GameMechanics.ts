@@ -63,17 +63,20 @@ const CreateRandom=(start:number,end:number)=>{
     return ans
 }
 export const sequence=['A',2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
-export const getJockey=(restElements:card[]):{lastCard:card,Jockey:any}=>{
-    const lastCard=restElements[restElements.length-1];
-    console.log(lastCard)
-    let Jockey
-    for(let i=0;i<sequence.length;i++){
-        if(lastCard?.card===sequence[i]){
-            Jockey= sequence[i+1];
+export const getJockey = (restElements: card[]): { lastCard: card, Jockey: any } => {
+    const lastCard = restElements[restElements.length - 1];
+    console.log(lastCard);
+    let Jockey;
+
+    for (let i = 0; i < sequence.length; i++) {
+        if (lastCard?.card === sequence[i]) {
+            Jockey = sequence[(i + 1) % sequence.length];
+            break;
         }
     }
-    return {lastCard,Jockey};
-}
+
+    return { lastCard, Jockey };
+};
 
 //----method to validate a set --------
 export const setValidator = (arr: card[],Jockey:string|number): boolean => {

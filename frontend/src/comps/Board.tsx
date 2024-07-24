@@ -409,11 +409,13 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         {playercards.length===0&&<WinDisclaimer winner={Winner} Text='You Won'/>}
         {(gameEnded &&playercards.length!==0)&& <LoseDisclaimer winner={Winner} Text='You Lose'/>}
       </div>
+
+
       <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
         
        <div className='flex flex-row gap-2'>
-       <button onClick={() => setOpenCards(prev => !prev)} className={`${openCards?`bg-yellow-500`:`bg-white`} text-black px-2 py-1 rounded`}>{openCards?`close`:`Cards`}</button>
-       <button className={`px-2 py1 ${makingSet?`bg-black`:`bg-orange-600`} text-white font-semibold`} onClick={()=>{
+       <button onClick={() => setOpenCards(prev => !prev)} className={`${openCards?`bg-yellow-500`:`bg-white shadow-lg shadow-black`} text-black px-2 py-1 rounded`}>{openCards?`close`:`Cards`}</button>
+       <button className={`px-2 py1 ${makingSet?`bg-blue-700`:`bg-orange-600`} text-white font-semibold shadow-lg shadow-black rounded-lg`} onClick={()=>{
         setMakingSet((prev)=>!prev)
         //now its true>>
        if(makingSet && selectedforset.length>=3){
