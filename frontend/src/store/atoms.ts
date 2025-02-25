@@ -111,6 +111,12 @@ export const pl4_Valids=atom({
     { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
     ]]
 })
+
+export const join_Button_State = atom({
+    key:"joinButtonState",
+    default:false
+})
+
 export const allvalids=atom({
     key:"allValidsintheGame",
     default:<Card[][]>[

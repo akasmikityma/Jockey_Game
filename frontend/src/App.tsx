@@ -8,8 +8,8 @@ const App = () => {
     <WebSocketProvider>
       <Router>
         <Routes>
-            <Route path='/' element={<Board/>}/>
-            <Route path='/explore' element={<Explore/>}/>
+            <Route path='/board' element={<Board/>}/>
+            <Route path='/' element={<Explore/>}/>
         </Routes>
     </Router>
     </WebSocketProvider>

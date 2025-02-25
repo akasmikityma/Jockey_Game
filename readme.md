@@ -38,3 +38,34 @@ Backend : using Node.js and Websocket i built the server of the app. i wrote in 
 FrontEnd : at the FrontEnd i used these following
            React + typescript ,beautiful-dnd kit,recoil,tailwind css
 
+// on the turn where the user put a set to the board cant take another card >> it can see only the jockey card >> [
+   1> close the modal if anywhere clicked except the card [that should be on every modal >> (one modal at a time)]
+   2> when the jockey modal is opened then the cards cant be taken from the deck >> 
+   3> 
+]
+// how can i make the notifications/alerts better
+// do i get the images downloaded >>[no] 
+// and some bugs >> [
+
+]
+// more smoother experience while getting into the game >> 
+// main thing is ui >> how can i better it ? 
+ 
+/// mostly alert messages that needs to be fixed first >>[
+   i) your move's over
+   ii) clicked on a set
+   iii) jockeyNumber
+   iv) u need to have a valid set first
+]
+----------------------------------------------------------------
+>> major issues ==> 
+1> once the page is refreshed the game state is gone 
+2> once a game is done make sure to give option to make room for another game >> 
+3> if a player clicks the init twice then its taking the same player again and again as different players>>
+---------------------------------------------
+>> have another global atom for the join game >> once its set then just make it disappear from every where or just make the button not clickable[done]
+
+-----------------------------------------------------------------
+show a message once a user puts a set to validation , and then direct them to click on the over message >>
+card added 's alert doesnt make sense >> [in the end product][ done (removed) ]
+>> 6,7,8,9 for this set if the jockey is 6 then its flipped on its front so that no other guy gets to see it >> but since its a series its obvious that 6 is the jocky >> [how do i fix it?? ]

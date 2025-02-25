@@ -2,12 +2,13 @@
 import button from '../../button.mp3'
 import React, { useEffect, useState,useRef } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal, OpenOptions, toPutWhere } from '../store/atoms';
+import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal, OpenOptions, toPutWhere, join_Button_State } from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
 import { DragDropContext,Draggable,Droppable, DraggableId} from 'react-beautiful-dnd';
 import notseenJockeycard from '../../notseenJockeycard.png';
+import AlertBoard from '../smallComps/AlertBoard';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   const [length, setLength] = useState<number>(10);
@@ -27,12 +28,14 @@ const Board: React.FC = () => {
   const [allthevalids,setAlltheValids]=useRecoilState(allvalids)
   const [isModalOpen,setisModalOpen]=useState(false)
   const setSetintheModal=useSetRecoilState(setIntheModal)
-const [seenJockey,setseenJockey]=useState(false);
- const [Winner,setWinner]=useState('');
-const [gameEnded,setGameEnded]=useState(false);
-const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
+  const [seenJockey,setseenJockey]=useState(false);
+  const [Winner,setWinner]=useState('');
+  const [gameEnded,setGameEnded]=useState(false);
+  const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
+  const [alertMessage, setAlertMessage] = useState<string|null>("");
   const audioRef = useRef(null);
+
   useEffect(() => {
     console.log(Winner.length)
     if (mePlayer) {
@@ -43,17 +46,17 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             console.log(message.msg);
             setBoardRemainigs(message.nowRem);
             setPlayerCards(message.msg);
-            alert(`you have to give one back ${message.action}`);
+            setAlertMessage(`you have to give one back ${message.action}`);
             break;
           case "takeGbRes":
             console.log(message.msg);
             setPlayerCards(message.msg);
-            alert(`you have to give one back ${message.action}`);
+            setAlertMessage(`you have to give one card back ... ${message.action}`);
             break;
           case "aftergb":
             setPlayerCards(message.msg);
             setGivenBackCards(message.givenBacks);
-            alert(`your turn is complete`);
+            setAlertMessage(`your turn is complete`);
             break;
           case "gameStateUpdate":
             // Update the remaining cards and given back cards across all players
@@ -82,7 +85,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             setGivenBackCards(message.givenBacks);
             break;
           case "yourTurn":
-            alert(message.msg)
+            setAlertMessage(message.msg)
             break;
           case "afterleavefromGB":
             setPlayerCards(message.msg);
@@ -97,6 +100,13 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   }, [mePlayer]);
   
   //handleDragEnd-------
+
+  useEffect(() => {
+    if (alertMessage) {
+      const timer = setTimeout(() => setAlertMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertMessage]);
 
   const handleOnDragEnd = (result:any) => {
     if (!result.destination) return;
@@ -167,7 +177,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         alert(`already included that card - removing the card from there ${JSON.stringify(selectedforset)}`)
         
       }else{
-        alert(`one card added ${JSON.stringify(selectedforset)}`)
+        // alertMessage(`one card added ${JSON.stringify(selectedforset)}`)
         setselectedforset((prev)=>[...prev,card])
       }
     }
@@ -206,8 +216,10 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
         console.error("Audio playback failed:", error);
       });
     }
-    alert(`your move's over`);
+    setAlertMessage(`your move's over`);
   };
+  // const [JockeyModalOpen,setJockeyModalOpen] = useState(false);
+
 
   const firstThreeValids = allthevalids.slice(0, 3);
   const nextThreeValids = allthevalids.slice(3, 6);
@@ -215,6 +227,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
 
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
+       {alertMessage && <AlertBoard msg={alertMessage} />}
       <div className='top-0 right-0 absolute p-8'> 
       <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleClick}>over</button>
       <audio ref={audioRef} src={button}></audio>
@@ -225,7 +238,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           <div className='grid grid-cols-3 w-full h-full'>
             {firstThreeValids.map((ca, i) => (
               <div className='w-2/3 h-4/5 flex gap-0.5' key={i} onClick={()=>{
-                alert('clicked on a set')
+                setAlertMessage('clicked on a set')
                 openModalofset();
                 setSetintheModal(ca)
               }}>
@@ -245,7 +258,7 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
             {nextThreeValids.map((ca, i) => (
               <div className='w-5/6 h-5/6 flex gap-0.5' key={i}
               onClick={()=>{
-                alert('clicked on a set')
+                setAlertMessage('clicked on a set')
                 openModalofset();
                 setSetintheModal(ca)
               }}
@@ -342,10 +355,10 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           <div className='absolute top-1/4 left-1/3 cursor-pointer' onContextMenu={(e)=>{
             e.preventDefault()
             if(player3valids.flat().length>=3){
-              alert(realJockey)
+              setAlertMessage(`the Jocky is -> ${realJockey}`)
               setSeejockey((prev)=>!prev)
             }else{
-              alert(`u need to have a valid set first`)
+              setAlertMessage(`u need to have a valid set first`)
             }
             
           }}>
@@ -403,8 +416,8 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           </div>
         )}
 
-        {modalopen && <Modal clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
-        {seeJocky&&<JockeyModal jockeyCard={jockeyCard}/>}
+        {modalopen && <Modal onClose={()=>setModalopen(false)} clickedby={clickedBy} takefunc={take_card} remainings={boardRemainings} giveCardBack={buttonWalagiveBack}/>}
+        {seeJocky&&<JockeyModal jockeyCard={jockeyCard} onClose={()=>setSeejockey(false)}/>}
         {isModalOpen && <SetModal sedMessageAddCard={(cards) => sendAddMessage(cards)} modalOpener={setisModalOpen} />}
         {playercards.length===0&&<WinDisclaimer winner={Winner} Text='You Won'/>}
         {(gameEnded &&playercards.length!==0)&& <LoseDisclaimer winner={Winner} Text='You Lose'/>}
@@ -423,7 +436,8 @@ const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
           type:"showSet",
           set:selectedforset
       }))
-      alert(`set put to validation`)
+      setAlertMessage(`set put to validation`)
+      setAlertMessage("once u are done with ur moves CLICK ON OVER : ")
       setselectedforset([])
        }else if(makingSet && selectedforset.length<3){
         setselectedforset([])
@@ -504,10 +518,10 @@ const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
   )
 }
 
-const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }> = ({  clickedby, takefunc, remainings, giveCardBack }) => {
+const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void ,onClose:()=>void}> = ({  clickedby, takefunc, remainings, giveCardBack ,onClose}) => {
   const [topCard, setTopCard] = useState<Card>();
   const [givencards, setGivenCards] = useRecoilState(given_backs);
-
+  const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     console.log('Modal opened. Clicked by:', clickedby);
     console.log('Remaining Cards:', remainings);
@@ -521,9 +535,20 @@ const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Car
       setTopCard(undefined);
     }
   }, [clickedby, remainings, givencards]);
+  useEffect(()=>{
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose(); // Close modal when clicking outside
+      }
+    };
 
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  })
   return (
-    <div className='flex justify-center items-center w-1/6 h-1/3 mt-16 z-50'>
+    <div className='flex justify-center items-center w-1/6 h-1/3 mt-16 z-50' ref={modalRef}>
       <div className="relative w-full h-full">
         <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2 mb-2">
           <button className="bg-white/30 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded border-2 border-yellow-300" onClick={takefunc}>Take</button>
@@ -542,15 +567,35 @@ const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Car
     </div>
   );
 };
-const JockeyModal:React.FC<{jockeyCard:Card}>=({jockeyCard})=>{
+const JockeyModal: React.FC<{ jockeyCard: Card; onClose: () => void }> = ({
+  jockeyCard,
+  onClose,
+}) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose(); // Close modal when clicking outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
-    <div className='z-50'>
-      <div>
-        <img src={jockeyCard.image} alt="" />
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div ref={modalRef} className="bg-white p-4 rounded-lg shadow-lg">
+        <img src={jockeyCard.image} alt="Jockey" className="w-full h-auto" />
       </div>
     </div>
-  )
-}
+  );
+};
+
+// export default JockeyModal;
 export default Board;
 // -----------------------------------------------------------------------------------------------------------------
 

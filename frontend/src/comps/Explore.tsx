@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { plyers_InHands, gamePlayers, Socket_ME, remainingCards, JockeyOftheGame, RealJockey } from '../store/atoms';
 import { useWebSocket } from '../store/ContextProviderer';
-
+import { join_Button_State } from '../store/atoms';
 const Explore = () => {
     const navigate = useNavigate();
     const [cardsINHands, setcardsINHands] = useRecoilState(plyers_InHands);
@@ -16,8 +16,9 @@ const Explore = () => {
     const setRealJockey=useSetRecoilState(RealJockey)
     const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
     const [name,setName]=useState('')
+    const [joinedState,setJoinedState] = useRecoilState(join_Button_State);
     const getToGame = () => {
-        navigate(`/?socket=${socket}`);
+        navigate(`/board?socket=${socket}`);
     };
     useEffect(() => {
         if (!socket) {
@@ -38,6 +39,7 @@ const Explore = () => {
                     setRealJockey(message.Jockey)
                     break;
                 case "join":
+                    setJoinedState(true);
                     console.log(`in case of join message-type`);
                     // setPlayers(message.noOFplayers);
                     break;
@@ -59,10 +61,14 @@ const Explore = () => {
                     socket?.send(JSON.stringify({ type: "init_game",name:name }));
                     setName('')
                 }}>init_game</button>
-                <button className='p-4 text-white bg-black' onClick={() => {
+                {  <button className={`p-4 text-white transition ${
+    joinedState ? "bg-gray-500 cursor-not-allowed" : "bg-black cursor-pointer"
+  }`} onClick={() => {
+                    if(joinedState) return;
                     console.log(`join clicked`);
+                    // setJoinedState(true);
                     socket?.send(JSON.stringify({ type: "join" }));
-                }}>join</button>
+                }}>{joinedState? "joined":"join"}</button>}
                 <button className='p-4 text-white bg-black' onClick={() => {
                     socket?.send(JSON.stringify({ type: "start" }));
                 }}>start</button>
