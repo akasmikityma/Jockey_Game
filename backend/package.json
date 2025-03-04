@@ -5,14 +5,17 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "dev":"node dist/index.js",
-    "both":"npm run build & npm run dev"
+    "dev": "node dist/index.js",
+    "both": "npm run build & npm run dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/ws": "^8.5.10",
-    "ws": "^8.17.1"
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@types/ws": "^8.5.14"
   }
 }

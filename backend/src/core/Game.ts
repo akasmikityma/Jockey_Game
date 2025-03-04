@@ -46,20 +46,111 @@
 //     }
 // }
 
+//------------------------------------------------------------------------------------
+
+// import { WebSocket } from "ws";
+// import { card } from "../CardsAll";
+
+// export interface plr extends WebSocket {
+//     cards: card[];
+//     hasStarted: boolean;
+//     valids:card[]
+// }
+// export interface plr extends WebSocket {
+//     name:string;
+//     cards: card[];
+//     hasStarted: boolean;
+//     valids:card[]
+// }
+// class Board {
+//     public leftOutCards: card[];
+//     public givenBackCards: card[];
+//     public validSets: card[][];
+
+//     constructor() {
+//         this.leftOutCards = [];
+//         this.givenBackCards = [];
+//         this.validSets = [];
+//     }
+// }
+
+// export class Game {
+//     public Winner:string;
+//     public Players: plr[];
+//     public remainingCards: card[];
+//     public Jockey: string | number;
+//     public board: Board;
+//     public moveCount: number;
+//     private awaitingGiveBack: boolean;
+//     private currentPlayerIndex:number
+//     constructor(players: plr[]) {
+//         this.Winner=''
+//         this.Players = players;
+//         this.remainingCards = [];
+//         this.Jockey = '';
+//         this.board = new Board();
+//         this.moveCount = 0;
+//         this.awaitingGiveBack = false;
+//         this.currentPlayerIndex=0
+//         for (let i = 0; i < this.Players.length; i++) {
+//             this.Players[i].send(JSON.stringify({
+//                 msg: `I'm player ${i} and the cards: ${JSON.stringify(this.Players[i].cards)}`
+//             }));
+//         }
+//     }
+
+//     // getCurrentPlayer(): plr {
+//     //     return this.Players[this.currentPlayerIndex];
+//     // }
+
+//     nextPlayer() {
+//         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.Players.length;
+//     }
+
+//     notifyCurrentPlayer() {
+//         const currentPlayer = this.getCurrentPlayer();
+//         if (currentPlayer) {
+//             currentPlayer.send(JSON.stringify({ type: "yourTurn", msg: "It's your turn!" }));
+//         }
+//     }
+
+//     allPlayersStarted() {
+//         return this.Players.every(player => player.hasStarted);
+//     }
+
+//     isEnded() {
+//         return this.Players.some(player => player.cards.length === 0);
+//     }
+
+//     getCurrentPlayer(): plr {
+//         return this.Players[this.moveCount % this.Players.length];
+//     }
+
+//     incrementMoveCount() {
+//         this.moveCount++;
+//         this.awaitingGiveBack = false;
+//     }
+
+//     setAwaitingGiveBack(value: boolean) {
+//         this.awaitingGiveBack = value;
+//     }
+
+//     isAwaitingGiveBack(): boolean {
+//         return this.awaitingGiveBack;
+//     }
+// }
+
 import { WebSocket } from "ws";
 import { card } from "../CardsAll";
 
 export interface plr extends WebSocket {
+    name: string;
     cards: card[];
     hasStarted: boolean;
-    valids:card[]
+    valids: card[];
+    send(data: string): void; // Ensure send is recognized
 }
-export interface plr extends WebSocket {
-    name:string;
-    cards: card[];
-    hasStarted: boolean;
-    valids:card[]
-}
+
 class Board {
     public leftOutCards: card[];
     public givenBackCards: card[];
@@ -73,33 +164,35 @@ class Board {
 }
 
 export class Game {
-    public Winner:string;
+    public Winner: string;
     public Players: plr[];
     public remainingCards: card[];
     public Jockey: string | number;
     public board: Board;
     public moveCount: number;
     private awaitingGiveBack: boolean;
-    private currentPlayerIndex:number
+    private currentPlayerIndex: number;
+
     constructor(players: plr[]) {
-        this.Winner=''
+        this.Winner = '';
         this.Players = players;
         this.remainingCards = [];
         this.Jockey = '';
         this.board = new Board();
         this.moveCount = 0;
         this.awaitingGiveBack = false;
-        this.currentPlayerIndex=0
-        for (let i = 0; i < this.Players.length; i++) {
-            this.Players[i].send(JSON.stringify({
-                msg: `I'm player ${i} and the cards: ${JSON.stringify(this.Players[i].cards)}`
+        this.currentPlayerIndex = 0;
+
+        this.Players.forEach((player, index) => {
+            player.send(JSON.stringify({
+                msg: `I'm player ${index} and the cards: ${JSON.stringify(player.cards)}`
             }));
-        }
+        });
     }
 
-    // getCurrentPlayer(): plr {
-    //     return this.Players[this.currentPlayerIndex];
-    // }
+    getCurrentPlayer(): plr {
+        return this.Players[this.currentPlayerIndex];
+    }
 
     nextPlayer() {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.Players.length;
@@ -120,10 +213,6 @@ export class Game {
         return this.Players.some(player => player.cards.length === 0);
     }
 
-    getCurrentPlayer(): plr {
-        return this.Players[this.moveCount % this.Players.length];
-    }
-
     incrementMoveCount() {
         this.moveCount++;
         this.awaitingGiveBack = false;
@@ -137,6 +226,9 @@ export class Game {
         return this.awaitingGiveBack;
     }
 }
+
+
+//------------------------------------------------------------------------------------ end
 
 // export interface plr extends WebSocket {
 //     name: string;
