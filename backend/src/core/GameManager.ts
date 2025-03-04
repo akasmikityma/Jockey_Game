@@ -228,6 +228,10 @@
 // }
 // -------------------------------------------------------------------------------------------------------------------------------------
 
+/// <reference types="node" />
+/// <reference types="ws" />
+
+
 import { JustShuffle } from "../GameMechanics";
 import { DistributingCards, flatten_Cards, getJockey, setValidator } from "../GameMechanics";
 import { isWildcardSubarray } from "../setValidatorPro";

@@ -140,6 +140,9 @@
 //     }
 // }
 
+/// <reference types="node" />
+/// <reference types="ws" />
+
 import { WebSocket } from "ws";
 import { card } from "../CardsAll";
 

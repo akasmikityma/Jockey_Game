@@ -1,3 +1,7 @@
+
+/// <reference types="node" />
+/// <reference types="ws" />
+
 import { WebSocketServer } from "ws";
 import { GameManager } from "./core/GameManager";
 const PORT = Number(process.env.PORT) || 8080;
