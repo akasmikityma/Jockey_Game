@@ -6,7 +6,7 @@
   "scripts": {
   "build": "npm install --include=dev && tsc -b",
   "dev": "node dist/index.js",
-  "both": "npm run build & npm run dev"
+  "both": "npm run build && npm run dev"
 },
   "keywords": [],
   "author": "",
