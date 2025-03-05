@@ -233,7 +233,7 @@
 
 
 import { JustShuffle } from "../GameMechanics";
-import { DistributingCards, flatten_Cards, getJockey, setValidator } from "../GameMechanics";
+import { DistributingCards, flatten_Cards, getJockey} from "../GameMechanics";
 import { isWildcardSubarray } from "../setValidatorPro";
 import { Game, plr } from "./Game";
 import WebSocket from "ws";

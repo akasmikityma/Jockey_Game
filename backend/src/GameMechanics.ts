@@ -6,7 +6,7 @@ export const flatten_Cards:card[]=Cards2.flat();
 const shuffleTheCards=(flatten_Cards:card[])=>{
     const n=flatten_Cards.length;
     for(let i=n-1;i>0;i--){
-        let index=CreateRandom(0,i);
+        let index=CreateRandom(i);
         //swap these numbers
 
         let temp=flatten_Cards[i];
@@ -58,7 +58,7 @@ export const DistributingCards = (players: number, The_Array: card[]): { playerA
     return { playerArrays, remainingElements };
 };
 
-const CreateRandom=(start:number,end:number)=>{
+const CreateRandom=(end:number)=>{
     const ans= Math.floor(Math.random()*end)
     return ans
 }
@@ -79,32 +79,32 @@ export const getJockey = (restElements: card[]): { lastCard: card, Jockey: any }
 };
 
 //----method to validate a set --------
-export const setValidator = (arr: card[],Jockey:string|number): boolean => {
+// export const setValidator = (arr: card[],Jockey:string|number): boolean => {
     
-    if (arr.length < 3) return false;
+//     if (arr.length < 3) return false;
 
    
-    const isSequentialSet = (arr: card[]): boolean => {
-        const sequenceMap = new Map(sequence.map((card, index) => [card, index]));  
-        const cardIndices = arr.map(card => sequenceMap.get(card.card)).filter(index => index !== undefined);     
-        if (cardIndices.length !== arr.length) return false;   
-        cardIndices.sort((a, b) => a! - b!);
-        for (let i = 1; i < cardIndices.length; i++) {
-            if (cardIndices[i]! !== cardIndices[i - 1]! + 1) {
-                return false;
-            }
-        }
-        return true;
-    };
+//     const isSequentialSet = (arr: card[]): boolean => {
+//         const sequenceMap = new Map(sequence.map((card, index) => [card, index]));  
+//         const cardIndices = arr.map(card => sequenceMap.get(card.card)).filter(index => index !== undefined);     
+//         if (cardIndices.length !== arr.length) return false;   
+//         cardIndices.sort((a, b) => a! - b!);
+//         for (let i = 1; i < cardIndices.length; i++) {
+//             if (cardIndices[i]! !== cardIndices[i - 1]! + 1) {
+//                 return false;
+//             }
+//         }
+//         return true;
+//     };
 
     
-    const isSameCardsSet = (arr: card[]): boolean => {
-        const firstCard = arr[0].card;
-        return arr.every(card => card.card === firstCard);
-    };
+//     const isSameCardsSet = (arr: card[]): boolean => {
+//         const firstCard = arr[0].card;
+//         return arr.every(card => card.card === firstCard);
+//     };
 
-    return isSequentialSet(arr) || isSameCardsSet(arr);
-};
+//     return isSequentialSet(arr) || isSameCardsSet(arr);
+// };
 
 // const result=setValidator([
 //     { key: 's', card: 6, image: 'https://www.improvemagic.com/wp-content/uploads/2020/11/p6.png' },
