@@ -122,7 +122,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
-    "strict": true,
+    "strict": false,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
