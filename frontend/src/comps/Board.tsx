@@ -1,17 +1,18 @@
 
 import button from '../../button.mp3'
 import React, { useEffect, useState,useRef } from 'react';
-import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal, OpenOptions, toPutWhere, join_Button_State } from '../store/atoms';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { given_backs,  pl3_Valids, plyers_InHands, gamePlayers, remainingCards, selectedCards, JockeyOftheGame,allvalids, RealJockey, setIntheModal } from '../store/atoms';
 import { Card } from '../store/Cards';
 import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
-import { DragDropContext,Draggable,Droppable, DraggableId} from 'react-beautiful-dnd';
+import { DragDropContext,Draggable,Droppable} from 'react-beautiful-dnd';
 import notseenJockeycard from '../../notseenJockeycard.png';
 import AlertBoard from '../smallComps/AlertBoard';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
-  const [length, setLength] = useState<number>(10);
+  // const [length, setLength] = useState<number>(10);
+  const length = 10;
   const [modalopen, setModalopen] = useState(false);
   const [openCards, setOpenCards] = useState(false);
   const [given_back_cards, setGivenBackCards] = useRecoilState(given_backs);
@@ -453,8 +454,8 @@ const Board: React.FC = () => {
 
 const SetModal: React.FC<{ sedMessageAddCard: (cards: Card[]) => void ,modalOpener: React.Dispatch<React.SetStateAction<boolean>>,}> = ({ sedMessageAddCard ,modalOpener}) => {
   const Modalset = useRecoilValue(setIntheModal);
-  const [submitON,setSubmitON] = useState(false);
-  
+  // const [submitON,setSubmitON] = useState(false);
+  const submitON = false;
   console.log(Modalset);
   
   return (
@@ -520,7 +521,8 @@ const WinDisclaimer:React.FC<{Text:string,winner?:string}>=({Text,winner})=>{
 
 const Modal: React.FC<{ clickedby: string, takefunc: () => void, remainings: Card[], giveCardBack: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void ,onClose:()=>void}> = ({  clickedby, takefunc, remainings, giveCardBack ,onClose}) => {
   const [topCard, setTopCard] = useState<Card>();
-  const [givencards, setGivenCards] = useRecoilState(given_backs);
+  // const [givencards, setGivenCards] = useRecoilState(given_backs);
+  const givencards = useRecoilValue(given_backs);
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     console.log('Modal opened. Clicked by:', clickedby);

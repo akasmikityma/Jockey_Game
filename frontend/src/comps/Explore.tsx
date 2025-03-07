@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useSocketHook } from '../store/useSocketHook';
+import  { useEffect, useState } from 'react';
+// import { useSocketHook } from '../store/useSocketHook';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { plyers_InHands, gamePlayers, Socket_ME, remainingCards, JockeyOftheGame, RealJockey } from '../store/atoms';
+import { useRecoilState,  useSetRecoilState } from 'recoil';
+import { plyers_InHands, gamePlayers, remainingCards, JockeyOftheGame, RealJockey } from '../store/atoms';
 import { useWebSocket } from '../store/ContextProviderer';
 import { join_Button_State } from '../store/atoms';
 const Explore = () => {
     const navigate = useNavigate();
-    const [cardsINHands, setcardsINHands] = useRecoilState(plyers_InHands);
-    const [gamesLeftout,setgamesLeftout]=useRecoilState(remainingCards);
-    const [players, setPlayers] = useRecoilState(gamePlayers);
-    const meplayer=useRecoilValue(Socket_ME);
+    // const [cardsINHands, setcardsINHands] = useRecoilState(plyers_InHands);
+    const setcardsINHands = useSetRecoilState(plyers_InHands);
+    // const [gamesLeftout,setgamesLeftout]=useRecoilState(remainingCards);
+    const setgamesLeftout = useSetRecoilState(remainingCards);
+    // const [players, setPlayers] = useRecoilState(gamePlayers);
+    const setPlayers = useSetRecoilState(gamePlayers);
+    // const meplayer=useRecoilValue(Socket_ME);
     const [messages, setMessages] = useState<string[]>([]);
     const socket = useWebSocket()
     const setRealJockey=useSetRecoilState(RealJockey)
-    const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
+    // const [jockey,setJockey]=useRecoilState(JockeyOftheGame)
+    const setJockey=useSetRecoilState(JockeyOftheGame)
     const [name,setName]=useState('')
     const [joinedState,setJoinedState] = useRecoilState(join_Button_State);
     const getToGame = () => {
