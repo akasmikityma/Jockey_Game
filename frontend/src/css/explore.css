@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    font-family: "Press Start 2P", cursive; /* Retro font */
+    background-color: #a9a9a9; /* Darker pastel gray background */
+    color: #333; /* Darker text for contrast */
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
+  
+  .explore-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+  }
+  
+  .explore-header {
+    margin-bottom: 20px;
+  }
+  
+  .explore-title {
+    font-size: 2rem; /* Smaller font size */
+    color: #32cd32; /* Vibrant green */
+    text-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32;
+  }
+  
+  .explore-tagline {
+    font-size: 0.8rem; /* Smaller font size */
+    margin-top: 10px;
+    color: #aec6cf; /* Pastel blue */
+  }
+  
+  .explore-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .explore-input {
+    padding: 10px;
+    font-size: 0.8rem;
+    border: 2px solid #000;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  .explore-button {
+    font-family: "Press Start 2P", cursive;
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #aec6cf; /* Pastel blue */
+    border: 2px solid #000;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #aec6cf, 0 0 20px #aec6cf;
+  }
+  
+  .explore-button:hover {
+    background-color: #000;
+    color: #aec6cf;
+    border: 2px solid #aec6cf;
+  }
+  
+  .explore-button.disabled {
+    background-color: #777;
+    cursor: not-allowed;
+  }
+  
+  .explore-messages {
+    margin-top: 20px;
+    width: 80%;
+    background-color: #e6e6fa; /* Light pastel lavender */
+    border: 2px solid #77dd77; /* Pastel green */
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .message {
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    color: #333;
+  }
