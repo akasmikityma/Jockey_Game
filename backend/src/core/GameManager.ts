@@ -231,9 +231,8 @@
 /// <reference types="node" />
 /// <reference types="ws" />
 
-
 import { JustShuffle } from "../GameMechanics";
-import { DistributingCards, flatten_Cards, getJockey} from "../GameMechanics";
+import { DistributingCards, getJockey} from "../GameMechanics";
 import { isWildcardSubarray } from "../setValidatorPro";
 import { Game, plr } from "./Game";
 import WebSocket from "ws";
@@ -388,39 +387,53 @@ export class GameManager {
             currentPlayer.hasStarted = true;
             const currGame = this.findGameByPlayerSocket(socket);
             if (currGame && currGame.allPlayersStarted()) {
-                const shuffledCardsArr = DistributingCards(currGame.Players.length, flatten_Cards);
+                // Use the game's own deck
+                const gameDeck = currGame.getGameDeck();
+                console.log("Starting new game with fresh deck of size:", gameDeck.length);
+                
+                const shuffledCardsArr = DistributingCards(currGame.Players.length, gameDeck);
+                
+                console.log("After distribution:");
+                console.log("Players:", currGame.Players.length);
+                console.log("Cards per player:", shuffledCardsArr.playerArrays.map(arr => arr.length));
+                console.log("Remaining cards:", shuffledCardsArr.remainingElements.length);
+    
                 currGame.remainingCards = shuffledCardsArr.remainingElements;
-                const decider=getJockey(currGame.remainingCards).lastCard
+                const decider = getJockey(currGame.remainingCards).lastCard;
                 currGame.Jockey = getJockey(currGame.remainingCards).Jockey;
-                console.log(currGame.Jockey)
-               
+    
                 currGame.board.leftOutCards = shuffledCardsArr.remainingElements.slice(0, -1);
+                
                 for (let i = 0; i < currGame.Players.length; i++) {
                     currGame.Players[i].cards = shuffledCardsArr.playerArrays[i];
                     currGame.Players[i].send(JSON.stringify({
                         type: "start",
                         msg: currGame.Players[i].cards,
                         remainingCards: currGame.board.leftOutCards,
-                        JockyDecider:decider,
+                        JockyDecider: decider,
                         Jockey: currGame.Jockey,
-                        totalplayers:currGame.Players.length
+                        totalplayers: currGame.Players.length
                     }));
                 }
+                
                 this.broadcastGameState(currGame);
+            }else {
+                // Notify the current player to wait for others to start
+                currentPlayer.send(JSON.stringify({
+                    msg: "Waiting for all players to start the game. Please wait for others to send 'start'."
+                }));
             }
         }
     }
-
     private handleTakeFromRem(socket: WebSocket) {
         const currentPlayer = this.findPlayerInGame(socket);
         const currGame = this.findGameByPlayerSocket(socket);
         if (currGame && currentPlayer) {
-            if(currGame.board.leftOutCards.length===0){
-                // make the givenbacks the leftoutCards >>
-                 const newRemainings=JustShuffle(currGame.board.givenBackCards);
-                // currGame.board.leftOutCards=currGame.board.givenBackCards;
-                currGame.board.leftOutCards=newRemainings
-                currGame.board.givenBackCards=[]
+            if (currGame.board.leftOutCards.length === 0) {
+                // Replenish the deck from givenBackCards
+                const newRemainings = JustShuffle(currGame.board.givenBackCards);
+                currGame.board.leftOutCards = newRemainings;
+                currGame.board.givenBackCards = [];
             }
             const card = currGame.board.leftOutCards.pop();
             if (card) {
@@ -437,7 +450,6 @@ export class GameManager {
                 console.log("No cards left in the deck.");
             }
         }
-        //if the currgame.board.leftoutCards are empty make the givenbacks assigned to leftouts and make givenbacks empty .. 
     }
 
     private handleTakeFromGb(socket: WebSocket) {
@@ -638,5 +650,3 @@ export class GameManager {
         return undefined;
     }
 }
-
-

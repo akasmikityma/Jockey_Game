@@ -144,7 +144,7 @@
 /// <reference types="ws" />
 
 import { WebSocket } from "ws";
-import { card } from "../CardsAll";
+import { card, Cards2 } from "../CardsAll";
 
 export interface plr extends WebSocket {
     name: string;
@@ -167,24 +167,26 @@ class Board {
 }
 
 export class Game {
-    public Winner: string;
     public Players: plr[];
     public remainingCards: card[];
-    public Jockey: string | number;
+    public Winner: string;
+    public Jockey: any;
     public board: Board;
     public moveCount: number;
-    private awaitingGiveBack: boolean;
-    private currentPlayerIndex: number;
+    public awaitingGiveBack: boolean;
+    public currentPlayerIndex: number;
+    private gameDeck: card[];
 
     constructor(players: plr[]) {
-        this.Winner = '';
         this.Players = players;
+        this.Winner = '';
         this.remainingCards = [];
         this.Jockey = '';
         this.board = new Board();
         this.moveCount = 0;
         this.awaitingGiveBack = false;
         this.currentPlayerIndex = 0;
+        this.gameDeck = Cards2.flat();
 
         this.Players.forEach((player, index) => {
             player.send(JSON.stringify({
@@ -193,6 +195,10 @@ export class Game {
         });
     }
 
+    public getGameDeck(): card[] {
+        return [...this.gameDeck]; // Return a copy of the deck
+    }
+    
     getCurrentPlayer(): plr {
         return this.Players[this.currentPlayerIndex];
     }
@@ -229,7 +235,6 @@ export class Game {
         return this.awaitingGiveBack;
     }
 }
-
 
 //------------------------------------------------------------------------------------ end
 
