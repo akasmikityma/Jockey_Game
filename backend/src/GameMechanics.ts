@@ -7,18 +7,18 @@ export const getNewDeck = (): card[] => {
 };
 
 const shuffleTheCards = (cards: card[]): card[] => {
-    // Create a deep copy of the input array
-    const cardsCopy = JSON.parse(JSON.stringify(cards));
-    const n = cardsCopy.length;
-    
-    for(let i = n-1; i > 0; i--) {
-        let index = CreateRandom(i);
-        let temp = cardsCopy[i];
-        cardsCopy[i] = cardsCopy[index];
-        cardsCopy[index] = temp;
+    // Ensure uniqueness before shuffling
+    const uniqueCards = Array.from(
+        new Map(cards.map(card => [`${card.key}-${card.card}`, card])).values()
+    );
+
+    for (let i = uniqueCards.length - 1; i > 0; i--) {
+        const j = CreateRandom(i);
+        [uniqueCards[i], uniqueCards[j]] = [uniqueCards[j], uniqueCards[i]];
     }
-    return cardsCopy;
-}
+
+    return uniqueCards;
+};
 
 
 export const JustShuffle = (cards: card[]): card[] => {
@@ -35,31 +35,45 @@ export const DistributingCards = (players: number, gameDeck: card[]): { playerAr
         throw new Error("Number of players must be between 1 and 5");
     }
 
-    // Create a deep copy of the game deck
-    const deckCopy = JSON.parse(JSON.stringify(gameDeck));
-    const shuffled = shuffleTheCards(deckCopy);
+    // Ensure the deck is unique
+    const uniqueDeck = Array.from(
+        new Map(gameDeck.map(card => [`${card.key}-${card.card}`, card])).values()
+    );
+
+    console.log("Unique deck size before shuffle:", uniqueDeck.length);
+
+    // Shuffle the unique deck
+    const shuffled = shuffleTheCards([...uniqueDeck]);
+    console.log("Shuffled deck size:", shuffled.length);
 
     const playerArrays: card[][] = Array.from({ length: players }, () => []);
     const cardsPerPlayer = 8;
 
-    // Distribute exactly 8 cards to each player
-    for (let i = 0; i < players * cardsPerPlayer; i++) {
+    // Distribute exactly 8 unique cards to each player
+    for (let i = 0; i < players * cardsPerPlayer && shuffled.length > 0; i++) {
         const playerIndex = Math.floor(i / cardsPerPlayer);
-        if (shuffled.length > 0) {
-            const card = shuffled.shift();
-            if (card) {
-                playerArrays[playerIndex].push(card);
-            }
+        const card = shuffled.shift();
+        if (card) {
+            playerArrays[playerIndex].push(card);
         }
     }
 
-    // The remaining cards after distribution
-    const remainingElements = shuffled;
+    // Validate that each player has unique cards
+    const allCards = playerArrays.flat();
+    const uniqueCards = new Set(allCards.map(card => `${card.key}-${card.card}`));
+    if (allCards.length !== uniqueCards.size) {
+        throw new Error("Duplicate cards detected in player hands!");
+    }
 
-    console.log(`Distributed ${players * cardsPerPlayer} cards to ${players} players`);
-    console.log(`Remaining cards: ${remainingElements.length}`);
-    
-    return { playerArrays, remainingElements };
+    // Log distribution for debugging
+    playerArrays.forEach((hand, idx) => {
+        console.log(`Player ${idx} cards:`, hand.map(c => `${c.key}-${c.card}`).join(', '));
+    });
+
+    return { 
+        playerArrays, 
+        remainingElements: shuffled.filter(card => card !== null)
+    };
 };
 
 const CreateRandom=(end:number)=>{

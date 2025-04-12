@@ -37,18 +37,18 @@ const spades: card[] = [
   
   const clubs: card[] = [
     { key: 'c', card: 'A', image: '/cards/clubs/a.png' },
-    { key: 'c', card: 'Q', image: '/cards/hearts/q.png' },
-    { key: 'c', card: 'K', image: '/cards/hearts/k.png' },
-    { key: 'c', card: 'J', image: '/cards/hearts/j.png' },
-    { key: 'c', card: 10, image: '/cards/hearts/10.png' },
-    { key: 'c', card: 9, image: '/cards/hearts/9.png' },
-    { key: 'c', card: 8, image: '/cards/hearts/8.png' },
-    { key: 'c', card: 7, image: '/cards/hearts/7.png' },
-    { key: 'c', card: 6, image: '/cards/hearts/6.png' },
-    { key: 'c', card: 5, image: '/cards/hearts/5.png' },
-    { key: 'c', card: 4, image: '/cards/hearts/4.png' },
-    { key: 'c', card: 3, image: '/cards/hearts/3.png' },
-    { key: 'c', card: 2, image: '/cards/hearts/2.png' }
+    { key: 'c', card: 'Q', image: '/cards/clubs/q.png' },
+    { key: 'c', card: 'K', image: '/cards/clubs/k.png' },
+    { key: 'c', card: 'J', image: '/cards/clubs/j.png' },
+    { key: 'c', card: 10, image: '/cards/clubs/10.png' },
+    { key: 'c', card: 9, image: '/cards/clubs/9.png' },
+    { key: 'c', card: 8, image: '/cards/clubs/8.png' },
+    { key: 'c', card: 7, image: '/cards/clubs/7.png' },
+    { key: 'c', card: 6, image: '/cards/clubs/6.png' },
+    { key: 'c', card: 5, image: '/cards/clubs/5.png' },
+    { key: 'c', card: 4, image: '/cards/clubs/4.png' },
+    { key: 'c', card: 3, image: '/cards/clubs/3.png' },
+    { key: 'c', card: 2, image: '/cards/clubs/2.png' }
   ];
   
  export  const diamonds: card[] = [
