@@ -151,6 +151,7 @@ export interface plr extends WebSocket {
     cards: card[];
     hasStarted: boolean;
     valids: card[];
+    playerId : string ; 
     send(data: string): void; // Ensure send is recognized
 }
 

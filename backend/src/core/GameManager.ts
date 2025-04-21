@@ -103,7 +103,7 @@
 //     private handleInitGame(socket: WebSocket) {
 //         const newPlayer: plr = Object.assign(socket, { cards: [], hasStarted: false });
 //         this.pendingPlayers.push(newPlayer);
-//         console.log(`Player added. Total pending players: ${this.pendingPlayers.length}`);
+//         console.log(`. Total pending players: ${this.pendingPlayers.length}`);
 //     }
 
 //     private handleJoinGame(socket: WebSocket) {
@@ -237,16 +237,22 @@ import { isWildcardSubarray } from "../setValidatorPro";
 import { Game, plr } from "./Game";
 import WebSocket from "ws";
 import { card } from "../CardsAll";
+// import { json } from "stream/consumers";
 
 export class GameManager {
     private games: Game[];
     private pendingPlayers: plr[];
     private users: WebSocket[];
-
+    private playerToGameMap : Map<string,Game>
+    private disconnectedPlayers: Map<string,plr>;
+    private socketMetadata: Map<WebSocket, { playerId: string }>;
     constructor() {
         this.games = [];
         this.pendingPlayers = [];
         this.users = [];
+        this.playerToGameMap = new Map();
+        this.disconnectedPlayers = new Map();
+        this.socketMetadata = new Map();
     }
 
     addUser(socket: WebSocket) {
@@ -256,8 +262,10 @@ export class GameManager {
 
     removeUser(socket: WebSocket) {
         this.users = this.users.filter(user => user !== socket);
+        this.socketMetadata.delete(socket); 
     }
 
+    
     private addHandler(socket: WebSocket) {
         socket.on("message", (data) => {
             let messageData;
@@ -269,7 +277,11 @@ export class GameManager {
             }
 
             console.log(messageData);
-            const { type, set, card ,name} = messageData;
+            const { type, set, card ,name,playerId} = messageData;
+            if(type==="reconnect"){
+                this.handleReconnection(socket,playerId)
+                return
+            }
             const currentPlayer = this.findPlayerInGame(socket);
             const currGame = this.findGameByPlayerSocket(socket);
 
@@ -281,9 +293,11 @@ export class GameManager {
 
                 switch (type) {
                     case "init_game":
+                        console.log("lets handle the init_game case ")
                         this.handleInitGame(socket,name);
                         break;
                     case "join":
+                        console.log("lets handle the join case ")
                         this.handleJoinGame(socket);
                         break;
                     case "start":
@@ -352,6 +366,10 @@ export class GameManager {
                 }
             }
         });
+        socket.on("close", () => {
+            console.log("WebSocket connection closed");
+            this.handleDisconnection(socket); // Ensure this is called
+        });
     }
     
     private handleTurnOver(game: Game) {
@@ -360,18 +378,174 @@ export class GameManager {
         this.broadcastGameState(game); // Optionally broadcast the new game state
     }
 
-    private handleInitGame(socket: WebSocket,name:string) {
-        const newPlayer: plr = Object.assign(socket, { name:name,cards: [], hasStarted: false ,valids:[]});
-        this.pendingPlayers.push(newPlayer);
-        console.log(`Player added with name: ${newPlayer.name}. Total pending players: ${this.pendingPlayers.length}`);
+
+    // ----------------   Reconnection Logic >> 
+    // private handleReconnection(socket: WebSocket, playerId: string) {
+    //     console.log("disconnected players ", this.disconnectedPlayers);
+    //     const disConnectedPlayer = this.disconnectedPlayers.get(playerId);
+    //     console.log("disConnectedPlayer ", disConnectedPlayer);  
+    //     if (disConnectedPlayer) {
+    //         console.log("disconnected found", disConnectedPlayer.name);
+    
+    //         // Update the player's WebSocket reference
+    //         Object.assign(disConnectedPlayer, socket); 
+    //         this.disconnectedPlayers.delete(playerId);
+    
+    //         // Debug the playerToGameMap
+    //         console.log("playerToGameMap:", this.playerToGameMap);
+    
+    //         // Get the game from the playerToGameMap
+    //         const game = this.playerToGameMap.get(playerId);
+    //         console.log("game found", game);
+    //         if (game) {
+    //             // Update the player's reference in the game
+    //             const playerIndex = game.Players.findIndex(p => p.playerId === playerId);
+    //             if (playerIndex !== -1) {
+    //                 game.Players[playerIndex] = disConnectedPlayer; // Update the player reference
+    //             }
+    
+    //             socket.send(JSON.stringify({
+    //                 type: "reconnect",
+    //                 msg: "You have reconnected to the game.",
+    //                 gameState: {
+    //                     remainingCards: game.board.leftOutCards,
+    //                     givenBackCards: game.board.givenBackCards,
+    //                     validSets: game.board.validSets,
+    //                     cards: disConnectedPlayer.cards,
+    //                     currentPlayer: game.getCurrentPlayer().playerId,
+    //                     winner: game.Winner
+    //                 }
+    //             }));
+    //             console.log(`player with playerId ${playerId} reconnected`);
+    //         } else {
+    //             console.log(`Game not found for playerId ${playerId}`);
+    //         }
+    //     } else {
+    //         socket.send(JSON.stringify({
+    //             type: "error",
+    //             msg: "Reconnection failed. Player not found."
+    //         }));
+    //     }
+    // }
+
+    private handleReconnection(newSocket: WebSocket, playerId: string) {
+        console.log("Attempting reconnection for playerId:", playerId);
+        // Look up the disconnected player by playerId.
+        const disconnectedPlayer = this.disconnectedPlayers.get(playerId);
+        
+        if (disconnectedPlayer) {
+            console.log("Disconnected found:", disconnectedPlayer.name);
+            
+            // Option 1: If your player object is stored as a WebSocket object (or extends it)
+            // you cannot replace the socket via Object.assign. Instead, update methods as needed.
+            // For example, update the player's send method and update socketMetadata:
+            disconnectedPlayer.send = newSocket.send.bind(newSocket);
+            
+            // Now, update the socketMetadata for the new socket.
+            this.socketMetadata.set(newSocket, { playerId });
+            
+            // Remove from disconnectedPlayers.
+            this.disconnectedPlayers.delete(playerId);
+            
+            // Update the player reference in the game.
+            const game = this.playerToGameMap.get(playerId);
+            if (game) {
+                const playerIndex = game.Players.findIndex(p => p.playerId === playerId);
+                if (playerIndex !== -1) {
+                    game.Players[playerIndex] = disconnectedPlayer;
+                }
+                
+                // Send updated game state back to the client.
+                newSocket.send(JSON.stringify({
+                    type: "reconnect",
+                    msg: "You have reconnected to the game.",
+                    gameState: {
+                        remainingCards: game.board.leftOutCards,
+                        givenBackCards: game.board.givenBackCards,
+                        validSets: game.board.validSets,
+                        cards: disconnectedPlayer.cards,
+                        currentPlayer: game.getCurrentPlayer().playerId,
+                        winner: game.Winner
+                    }
+                }));
+                console.log(`Player with playerId ${playerId} reconnected`);
+            } else {
+                console.log(`Game not found for playerId ${playerId}`);
+            }
+        } else {
+            newSocket.send(JSON.stringify({
+                type: "error",
+                msg: "Reconnection failed. Player not found."
+            }));
+        }
     }
 
+    // DisConnection logic >> 
+   private handleDisconnection(socket: WebSocket) {
+    const player = this.findPlayerInGame(socket);
+    if (player) {
+        console.log(`Player ${player.name} with id ${player.playerId} disconnected`);
+        this.disconnectedPlayers.set(player.playerId, player); // Add to disconnectedPlayers map
+        console.log("Disconnected players map:", this.disconnectedPlayers);
+
+        const game = this.findGameByPlayerSocket(socket);
+        if (game) {
+            this.playerToGameMap.set(player.playerId, game); // Map playerId to game
+        } else {
+            console.log(`Game not found for player ${player.name}`);
+        }
+
+        // Grace period for reconnection
+        setTimeout(() => {
+            if (this.disconnectedPlayers.has(player.playerId)) {
+                console.log(`Player ${player.name} did not reconnect in time`);
+                const game = this.playerToGameMap.get(player.playerId);
+                if (game) {
+                    game.Players = game.Players.filter(p => p.playerId !== player.playerId);
+                    this.playerToGameMap.delete(player.playerId);
+                }
+                this.disconnectedPlayers.delete(player.playerId);
+            }
+            }, 30000); // 30 seconds grace period
+        } else {
+            console.log("Player not found in any game during disconnection");
+        }
+    }
+
+    private handleInitGame(socket: WebSocket,name:string) {
+        const playerId = this.generatePlayerId();
+        this.socketMetadata.set(socket, { playerId }); 
+        const newPlayer: plr = Object.assign(socket, { 
+            name:name,
+            cards: [],
+            hasStarted: false,
+            valids:[] ,
+            playerId:playerId});
+        this.pendingPlayers.push(newPlayer);
+        console.log(` with name: ${newPlayer.name} and playerId ${playerId} Total pending players: ${this.pendingPlayers.length}`);
+        socket.send(JSON.stringify({
+            type:"playerId",
+            playerId
+        }))
+        newPlayer.send(JSON.stringify({
+            type:"playerId",
+            playerId
+        }))
+
+        // i definitely dont need to have send for both the socket and the newPlayer 
+        // its more or less same >> its just that i dont know which one is working 
+    }
+    private generatePlayerId():string{
+        return Math.random().toString(36).substring(2, 9); 
+    }
     private handleJoinGame(socket: WebSocket) {
+        console.log("inside the handleJoingame method");
         if (this.pendingPlayers.length >= 3) {
             const game = new Game(this.pendingPlayers);
             this.games.push(game);
             this.pendingPlayers = [];
             for (const player of game.Players) {
+                this.playerToGameMap.set(player.playerId,game);
                 player.send(JSON.stringify({ type:"join",msg: "Game initialized. Please send 'start' to begin.",
                     noOFplayers:game.Players.length,
                  }));
@@ -631,22 +805,41 @@ export class GameManager {
     }
 
     private findPlayerInGame(socket: WebSocket): plr | undefined {
+        // Ensure the incoming socket has the playerId attached.
+        // You might attach it in onopen like: socket.playerId = localStorage.getItem("playerId")
+        
+        const meta = this.socketMetadata.get(socket);
+
+        if(!meta){
+            console.log("no metadata available for the socket ");
+            return undefined;
+        }
         for (const game of this.games) {
             for (const player of game.Players) {
-                if (player === socket) {
+                if (player.playerId === meta.playerId) {
+                    console.log(`Player found in game: ${player.name}`);
                     return player;
                 }
             }
         }
+        console.log("Player not found in any game");
         return undefined;
     }
 
     private findGameByPlayerSocket(socket: WebSocket): Game | undefined {
+        const meta = this.socketMetadata.get(socket);
+        if (!meta) {
+            console.log("No metadata found on socket");
+            return undefined;
+        }
+
+        const game = this.playerToGameMap.get(meta.playerId);
+        if (game) return game;
         for (const game of this.games) {
-            if (game.Players.some(player => player === socket)) {
+            if (game.Players.some(player => player.playerId === meta.playerId)) {
                 return game;
             }
         }
         return undefined;
-    }
+        }
 }
