@@ -166,6 +166,10 @@ major -- how do players put cards to another player's valid sets .. how do they 
 >>test if the leavecard is working or not >> 
 >>try to first give some alert that your turn has done >> 
 >> [BIG] alert every one when the game has ended .. [check on the backend if any player's cardsInhands have gone empty just broadcast that the game is over ]
-//when a player has not seen the jockey the other player's set must be having jockey somewhat hidden 
+>>> make sure a player doesnt join a game twice >> [
+  1> like what happens when the player clicks the join or init twice or more >> 
+]
 
-//make another comp that is only for the losers 
+>>when a player has not seen the jockey the other player's set must be having jockey somewhat hidden 
+
+>>make another comp that is only for the losers 

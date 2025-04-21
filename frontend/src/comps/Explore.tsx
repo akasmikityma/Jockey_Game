@@ -142,7 +142,13 @@ const Explore = () => {
           console.log(`in case of join message-type`);
           break;
         case "init_game":
+          // localStorage.setItem("playerId", message.playerId);
+          // console.log(`Player ID received and stored: ${message.playerId}`);
           break;
+        case "playerId":
+          localStorage.setItem("playerId", message.playerId);
+          console.log(`Player ID received and stored: ${message.playerId}`);
+        break;
         default:
           break;
       }
@@ -166,7 +172,7 @@ const Explore = () => {
         <button
           className="explore-button"
           onClick={() => {
-            console.log(`button clicked`);
+            console.log(`button clicked`,socket);
             socket?.send(JSON.stringify({ type: "init_game", name: name }));
             setName("");
           }}
