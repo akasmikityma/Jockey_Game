@@ -69,3 +69,9 @@ FrontEnd : at the FrontEnd i used these following
 show a message once a user puts a set to validation , and then direct them to click on the over message >>
 card added 's alert doesnt make sense >> [in the end product][ done (removed) ]
 >> 6,7,8,9 for this set if the jockey is 6 then its flipped on its front so that no other guy gets to see it >> but since its a series its obvious that 6 is the jocky >> [how do i fix it?? ]
+
+## 🎮 Gameplay Preview
+
+![Gameplay](./screenshots/Home.gif)
+<!-- ![Lobby](./screenshots/lobby.png)
+![Mobile View](./screenshots/mobile.png) -->
