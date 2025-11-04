@@ -72,6 +72,6 @@ card added 's alert doesnt make sense >> [in the end product][ done (removed) ]
 
 ## 🎮 Gameplay Preview
 
-![Gameplay](./screenshots/Home.gif)
+![Gameplay](./Screenshots/Home.gif)
 <!-- ![Lobby](./screenshots/lobby.png)
 ![Mobile View](./screenshots/mobile.png) -->
