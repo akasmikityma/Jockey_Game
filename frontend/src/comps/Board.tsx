@@ -8,7 +8,11 @@ import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
 import { DragDropContext,Draggable,Droppable} from 'react-beautiful-dnd';
 import notseenJockeycard from '../../notseenJockeycard.png';
+import { useNavigate } from 'react-router-dom';
 import AlertBoard from '../smallComps/AlertBoard';
+import ShowNotTurnMessage from '../smallComps/NotUrTurnCom';
+import Toast from './Toast';
+import NewGameButton from './NewGameButton';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   // const [length, setLength] = useState<number>(10);
@@ -35,8 +39,19 @@ const Board: React.FC = () => {
   const [clickedCardRight,setclickedCardRight]=useState<Card|null>(null)
   const [OpenOptions,setOpenOptions]=useState(false);
   const [alertMessage, setAlertMessage] = useState<string|null>("");
+  const [currentPlayer,setCurrentPlayer] = useState<{playerId: string, name: string} | null>(null);
+  const [myPlayerId, setMyPlayerId] = useState<String|null>(null);
+  const [showToast,setShowToast] = useState(false);
+  const [CanJoinNewGame,setCanJoinNewGame] = useState<boolean>(false);
   const audioRef = useRef(null);
-
+  
+  const navigate = useNavigate();
+  useEffect(()=>{
+    const storedPlayerId = localStorage.getItem("playerId");
+      if (storedPlayerId) {
+          setMyPlayerId(storedPlayerId);
+      }
+  },[])
   useEffect(() => {
     console.log(Winner.length)
     if (mePlayer) {
@@ -50,12 +65,26 @@ const Board: React.FC = () => {
             break;
           case "reconnect":
             console.log("Reconnected successfully:", message);
-            setAlertMessage("Reconnected to the game!");
-            setPlayerCards(message.gameState.cards); // Update player's cards
-            setBoardRemainigs(message.gameState.remainingCards); // Update remaining cards
-            setGivenBackCards(message.gameState.givenBackCards); // Update given-back cards
-            setAlltheValids(message.gameState.validSets); // Update valid sets
-            setWinner(message.gameState.winner); // Update winner if the game has ended
+            // setAlertMessage("Reconnected to the game!");
+            // setPlayerCards(message.gameState.cards); // Update player's cards
+            // setBoardRemainigs(message.gameState.remainingCards); // Update remaining cards
+            // setGivenBackCards(message.gameState.givenBackCards); // Update given-back cards
+            // setAlltheValids(message.gameState.validSets); // Update valid sets
+            // setWinner(message.gameState.winner); // Update winner if the game has ended
+            if (message.gameState) {
+                setAlertMessage("Successfully reconnected to the game!");
+                setPlayerCards(message.gameState.cards);
+                setBoardRemainigs(message.gameState.remainingCards);
+                setGivenBackCards(message.gameState.givenBackCards);
+                setAlltheValids(message.gameState.validSets);
+                setWinner(message.gameState.winner);
+                if (message.gameState.currentPlayer) {
+                  setCurrentPlayer({
+                    playerId: message.gameState.currentPlayer,
+                    name: message.gameState.currentPlayerName || ""
+                  });
+                }
+            }
             break;
           case "takeRemRes":
             console.log(message.msg);
@@ -64,12 +93,12 @@ const Board: React.FC = () => {
             setAlertMessage(`you have to give one back ${message.action}`);
             break;
             
-          case "gameStateUpdate":
-            setBoardRemainigs(message.remainingCards);
-            setGivenBackCards(message.givenBackCards);
-            setAlltheValids(message.validSets);
-            setWinner(message.Winner);
-            break;
+          // case "gameStateUpdate":
+          //   setBoardRemainigs(message.remainingCards);
+          //   setGivenBackCards(message.givenBackCards);
+          //   setAlltheValids(message.validSets);
+          //   setWinner(message.Winner);
+          //   break;
           case "takeGbRes":
             console.log(message.msg);
             setPlayerCards(message.msg);
@@ -87,7 +116,18 @@ const Board: React.FC = () => {
             setAlltheValids(message.validSets)
             console.log(message.Winner)
             setWinner(message.Winner)
+            console.log("case gamestate",message.currentPlayer)
+            setCurrentPlayer({
+              playerId: message.currentPlayer || "",
+              name: message.currentPlayerName || ""
+            });
             gameEndedMethod(message.Winner);
+            break;
+           case "turnChange":
+            setCurrentPlayer({
+                playerId: message.currentPlayer,
+                name: message.currentPlayerName
+            });
             break;
           case "showRes":
             console.log(message.msg)
@@ -106,6 +146,9 @@ const Board: React.FC = () => {
             setBoardRemainigs(message.remainingCards);
             setGivenBackCards(message.givenBacks);
             break;
+          case "notYourTurn":
+            setAlertMessage(message.msg);
+            break;
           case "yourTurn":
             setAlertMessage(message.msg)
             break;
@@ -113,14 +156,28 @@ const Board: React.FC = () => {
             setPlayerCards(message.msg);
             setGivenBackCards(message.givenBacks);
             break;
+          case "error":
+            console.log("Error message received:", message);
+            if (message.msg.includes("Player not found") || 
+                message.msg.includes("grace period expired")) {
+                setCanJoinNewGame(true);
+            }
+            setAlertMessage(message.msg);
+          case "gameLeft":
+            setCanJoinNewGame(true);
+            setAlertMessage(message.msg);
+            break;
           default:
             console.log(message.type);
         }
       };
     }
     console.log(`players in the game: ${JSON.stringify(players)}`);
+    console.log(`current player `,currentPlayer)
+    console.log(`valid current player ${currentPlayer?.playerId} and im ${myPlayerId} so my turn is`,currentPlayer?.playerId === myPlayerId)
   }, [mePlayer]);
   
+  const isMyTurn = currentPlayer?.playerId === myPlayerId;
   //handleDragEnd-------
 
   useEffect(() => {
@@ -128,8 +185,12 @@ const Board: React.FC = () => {
       const timer = setTimeout(() => setAlertMessage(null), 3000);
       return () => clearTimeout(timer);
     }
-  }, [alertMessage]);
-
+    if(showToast){
+      const timer = setTimeout(()=> setShowToast(false),3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertMessage,showToast]);
+  
   const handleOnDragEnd = (result:any) => {
     if (!result.destination) return;
 
@@ -240,6 +301,19 @@ const Board: React.FC = () => {
     }
     setAlertMessage(`your move's over`);
   };
+  const handleLeave = ()=>{
+     mePlayer?.send(JSON.stringify({ type: 'leaveGame' }));
+     setAlertMessage("U opt to leave the game")
+  }
+  const handleJoinNewGame =()=>{
+    if (mePlayer) {
+        mePlayer.send(JSON.stringify({
+            type: "leaveGame"
+        }));
+        // Navigate back to explore page
+        navigate('/explore');
+    }
+  }
   // const [JockeyModalOpen,setJockeyModalOpen] = useState(false);
 
 
@@ -249,10 +323,26 @@ const Board: React.FC = () => {
 
   return (
     <div className='bg-slate-700 flex justify-center min-h-screen p-10 relative'>
-       {alertMessage && <AlertBoard msg={alertMessage} />}
-      <div className='top-0 right-0 absolute p-8'> 
+       {/* {alertMessage && <AlertBoard msg={alertMessage} />} */}
+       {(alertMessage && !showToast) && <Toast message={alertMessage} onClose={()=>setAlertMessage("")} position='top'/>}
+       {showToast && <Toast message={"Its not ur turn brother .Plz wait. Click Anywhere Else Except the Cards"}
+        onClose={()=> {}}
+        position='top'
+       />}
+
+      {/* over button */}
+      <div className="absolute top-0 right-0 p-8 flex flex-col space-y-4">
+        {/* <div className='top-0 right-0 absolute p-8'>  */}
       <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleClick}>over</button>
       <audio ref={audioRef} src={button}></audio>
+      {/* </div> */}
+      
+      {/* Leave Game button */}
+      {/* <div className='top-0 right-0 absolute p-8'> */}
+          <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleLeave}>
+             leave Game
+          </button>
+      {/* </div> */}
       </div>
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
         {/* Player 1 */}
@@ -394,6 +484,9 @@ const Board: React.FC = () => {
                   zIndex: length - index,
                 }}
                 onClick={() => {
+                 if(!isMyTurn){
+                    setShowToast(true);
+                 }
                  if(boardRemainings.length===0){
                   mePlayer?.send(JSON.stringify({
                     type:"takefromrem"
@@ -468,7 +561,15 @@ const Board: React.FC = () => {
        }}>{makingSet?`submit`:`makeSet`}</button>
        </div>
       </div>
-     
+       {/* <div> */}
+        {(CanJoinNewGame || Winner) &&(
+          <button className='join-new-game-btn'
+            onClick={handleJoinNewGame}
+          >
+            Join New Game
+          </button>
+       )}
+       {/* </div> */}
     </div>
   );
 };

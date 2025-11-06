@@ -29,10 +29,12 @@
 import { useEffect, useState } from "react";
 import { Socket_ME } from "./atoms";
 import { useRecoilState } from "recoil";
-const WS_URL='https://jockey-game-1.onrender.com'
-// const WS_URL = 'ws://localhost:8080';
+import { useNavigate } from "react-router-dom";
+// const WS_URL='https://jockey-game-1.onrender.com'
+const WS_URL = 'ws://localhost:8080';
 
 export const useSocketHook = () => {
+    // const navigate = useNavigate();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [thisSocket, setThisSocket] = useRecoilState(Socket_ME);
     console.log(thisSocket);
@@ -69,8 +71,15 @@ export const useSocketHook = () => {
                 case "reconnect":
                     console.log("Reconnection message received in useSocketHook.ts:", message);
                     // Pass the message to the component for handling
+                    if(message.msg.includes("Successfully reconnected to game")){
+                        // navigate(`/board/socket${socket}`);
+                    }
                     break;
-
+                case "error":
+                    console.log("Error message from server:", message.msg);
+                    // Broadcast error so UI can decide how to react (toast, show button, disable auto-reconnect)
+                    window.dispatchEvent(new CustomEvent("ws-error", { detail: message }));
+                    break;
                 default:
                     console.log("Unhandled message type:", message.type);
             }
@@ -78,8 +87,14 @@ export const useSocketHook = () => {
 
         ws.onclose = () => {
             console.log("WebSocket connection closed");
-            setSocket(null);
-            alert("Connection lost. Attempting to reconnect...");
+            // setSocket(null);
+            // alert("Connection lost. Attempting to reconnect...");
+            setTimeout(()=>{
+                console.log("Attempting to reconnect ");
+                const newWs = new WebSocket(WS_URL);
+                setSocket(newWs);
+                setThisSocket(newWs);
+            },1000)
         };
 
         return () => {

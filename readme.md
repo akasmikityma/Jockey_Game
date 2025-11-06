@@ -70,7 +70,33 @@ show a message once a user puts a set to validation , and then direct them to cl
 card added 's alert doesnt make sense >> [in the end product][ done (removed) ]
 >> 6,7,8,9 for this set if the jockey is 6 then its flipped on its front so that no other guy gets to see it >> but since its a series its obvious that 6 is the jocky >> [how do i fix it?? ]
 
+
+>> when there are enough players get them a clear message >> that there are enough players u can press on start or wait >> [lets make for 3 players only ] [done]
+>> if its not a user's turn get him a clear message that its not ur turn >> [done] 
+>> reconnection fails sometimes [why's that ?? but happens for some players doesnt happen for others >> why's that ]
+   also even at explore there reconnection message . explore doesnt send any reconnection thing to the backend >> [done]
+>> imp >> when its not one's turn and he tried to take or do something >> show him a message >>  [ideally not needed but its better >> ] [done]  
+>> better ui >> [for the alerts >> ] [done]
+
+To be done : 
+>> if the playerid is not found and the reconnection is not possible any more to that very specific game >> [let him choose if he wants to get to a new game >> ]
+>> after end of a match also give them option to play >> 
+>> when pressing the init game ,.. show press Enter Join >> 
+>> over should not be always there .. or if there .. it should throw some messages to the user >> 
+
+
+WHAT's DONE
+2 buttons are added - "join new game" and "leave game" 
+leave game works >> [atlealst it seemed] 
+>>make sure players are sent to the explore .. [if possible make sure to put the existing name]
+>> IF PLAYER IS RECONNECTED .. GET HIM TO THE BOARD >> [VERY IMP]
 ## 🎮 Gameplay Preview
+
+for now >> 
+just fix the join new game button [the ui and show case it]
+IDEALLY  >> 
+since the game from where a player has left must have another player to be joined or make some player win out of 2 or what ever >> 
+
 
 ![Gameplay](./Screenshots/Home.gif)
 <!-- ![Lobby](./screenshots/lobby.png)

@@ -1,32 +1,39 @@
 .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #32cd32; /* Vibrant green for retro theme */
-    padding: 10px 20px;
-    border: 2px solid #32cd32;
-    border-radius: 5px;
-    font-family: "Press Start 2P", cursive;
-    font-size: 0.8rem;
-    text-align: center;
-    box-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32;
-    animation: fadeInOut 3s ease-in-out;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #32cd32;
+  padding: 10px 20px;
+  border: 2px solid #32cd32;
+  border-radius: 5px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 0.8rem;
+  text-align: center;
+  box-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.toast.bottom {
+  bottom: 20px;
+}
+
+.toast.top {
+  top: 20px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
   }
-  
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(20px);
-    }
-    10%,
-    90% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(20px);
-    }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}
