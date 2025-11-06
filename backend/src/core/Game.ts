@@ -214,7 +214,7 @@ export class Game {
             currentPlayer.send(JSON.stringify({ type: "yourTurn", msg: "It's your turn!" }));
         }
     }
-
+    
     allPlayersStarted() {
         return this.Players.every(player => player.hasStarted);
     }
