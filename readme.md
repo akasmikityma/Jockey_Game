@@ -61,6 +61,10 @@ All Clients ← broadcast updated state
 
 ## 🖼️ Gameplay Screenshots & GIFs 👇  
 
+### 🧍 Lobby / Waiting Screen  
+*(Static image of player lobby before game starts)*  
+![Lobby Screen](./Screenshots/Home.gif)
+
 ### 🎮 Gameplay Preview  
 *(GIF showing live multiplayer table — players drawing, giving back, and placing sets)*  
  
@@ -75,10 +79,6 @@ All Clients ← broadcast updated state
 
  GIF showing player using one or multiple Jockey cards to create valid set
  ![CreateIng Set with Jockey](./Screenshots/SetWithJockey.gif)
-
-### 🧍 Lobby / Waiting Screen  
-*(Static image of player lobby before game starts)*  
-![Lobby Screen](./Screenshots/Home.gif)
 
 ### 🧩 Card Interaction  
 *(GIF showing drag/drop or give-back interaction)*  
