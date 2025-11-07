@@ -64,14 +64,12 @@ All Clients ← broadcast updated state
 ### 🎮 Gameplay Preview  
 *(GIF showing live multiplayer table — players drawing, giving back, and placing sets)*  
  
- *(A player taking card from remaining unknown cards and then giving a card back from whatever he has including the just-taken one)
- (./Screenshots/takeAndGiveBack.gif)
+ ![A player taking card from remaining unknown cards and then giving a card back from whatever he has including the just-taken one](./Screenshots/takeAndGiveBack.gif)
+ 
 
- *(GIF showing player creating a set and submitting as valid one)*  
- (./Screenshots/SubmitValidSet.gif)
+ ![GIF showing player creating a set and submitting as valid one](./Screenshots/SubmitValidSet.gif)
 
- *(GIF showing player adding one or multiple cards to the existing sets)*  
- (./Screenshots/AddToExistingSet.gif)
+ ![GIF showing player adding one or multiple cards to the existing sets](./Screenshots/AddToExistingSet.gif)
 
    
 
