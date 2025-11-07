@@ -64,26 +64,27 @@ All Clients ← broadcast updated state
 ### 🎮 Gameplay Preview  
 *(GIF showing live multiplayer table — players drawing, giving back, and placing sets)*  
  
+ Gif of a player taking card from remaining unknown cards and then giving a card back from whatever he has including the just-taken one
  ![A player taking card from remaining unknown cards and then giving a card back from whatever he has including the just-taken one](./Screenshots/takeAndGiveBack.gif)
  
-
+ GIF showing player creating a set and submitting as valid one
  ![GIF showing player creating a set and submitting as valid one](./Screenshots/SubmitValidSet.gif)
-
+ 
+ GIF showing player adding one or multiple cards to the existing sets
  ![GIF showing player adding one or multiple cards to the existing sets](./Screenshots/AddToExistingSet.gif)
 
-   
+ GIF showing player using one or multiple Jockey cards to create valid set
+ ![CreateIng Set with Jockey](./Screenshots/SetWithJockey.gif)
 
 ### 🧍 Lobby / Waiting Screen  
 *(Static image of player lobby before game starts)*  
-`![Lobby Screen](./Screenshots/Home.gif)`
+![Lobby Screen](./Screenshots/Home.gif)
 
 ### 🧩 Card Interaction  
 *(GIF showing drag/drop or give-back interaction)*  
-`![Card Interaction](./Screenshots/DragDropShuffle.gif)`
+![Card Interaction](./Screenshots/DragDropShuffle.gif)
 
-### 📱 Responsive Layout (optional)  
-*(Screenshot of mobile view if you have one)*  
-`![Mobile View](./screenshots/mobile.png)`
+
 
 ---
 
