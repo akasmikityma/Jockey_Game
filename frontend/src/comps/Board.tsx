@@ -8,11 +8,7 @@ import { useWebSocket } from '../store/ContextProviderer';
 import CardCell from './CardCell';
 import { DragDropContext,Draggable,Droppable} from 'react-beautiful-dnd';
 import notseenJockeycard from '../../notseenJockeycard.png';
-import { useNavigate } from 'react-router-dom';
-import AlertBoard from '../smallComps/AlertBoard';
-import ShowNotTurnMessage from '../smallComps/NotUrTurnCom';
 import Toast from './Toast';
-import NewGameButton from './NewGameButton';
 const Board: React.FC = () => {
   const mePlayer = useWebSocket();
   // const [length, setLength] = useState<number>(10);
@@ -45,8 +41,8 @@ const Board: React.FC = () => {
   const [CanJoinNewGame,setCanJoinNewGame] = useState<boolean>(false);
   const audioRef = useRef(null);
   
-  const navigate = useNavigate();
   useEffect(()=>{
+    console.log(CanJoinNewGame)
     const storedPlayerId = localStorage.getItem("playerId");
       if (storedPlayerId) {
           setMyPlayerId(storedPlayerId);
@@ -163,6 +159,7 @@ const Board: React.FC = () => {
                 setCanJoinNewGame(true);
             }
             setAlertMessage(message.msg);
+            break;
           case "gameLeft":
             setCanJoinNewGame(true);
             setAlertMessage(message.msg);
@@ -301,21 +298,20 @@ const Board: React.FC = () => {
     }
     setAlertMessage(`your move's over`);
   };
-  const handleLeave = ()=>{
-     mePlayer?.send(JSON.stringify({ type: 'leaveGame' }));
-     setAlertMessage("U opt to leave the game")
-  }
-  const handleJoinNewGame =()=>{
-    if (mePlayer) {
-        mePlayer.send(JSON.stringify({
-            type: "leaveGame"
-        }));
-        // Navigate back to explore page
-        navigate('/explore');
-    }
-  }
-  // const [JockeyModalOpen,setJockeyModalOpen] = useState(false);
-
+  
+  // const handleLeave = ()=>{
+  //    mePlayer?.send(JSON.stringify({ type: 'leaveGame' }));
+  //    setAlertMessage("U opt to leave the game")
+  // }
+  // const handleJoinNewGame =()=>{
+  //   if (mePlayer) {
+  //       mePlayer.send(JSON.stringify({
+  //           type: "leaveGame"
+  //       }));
+  //       // Navigate back to explore page
+  //       navigate('/explore');
+  //   }
+  // }
 
   const firstThreeValids = allthevalids.slice(0, 3);
   const nextThreeValids = allthevalids.slice(3, 6);
@@ -339,9 +335,9 @@ const Board: React.FC = () => {
       
       {/* Leave Game button */}
       {/* <div className='top-0 right-0 absolute p-8'> */}
-          <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleLeave}>
+          {/* <button className='px-4 py-2 bg-pink-600 text-white font-bold shadow-lg shadow-black rounded-lg transform transition-transform duration-100 active:scale-95 focus:outline-none' onClick={handleLeave}>
              leave Game
-          </button>
+          </button> */}
       {/* </div> */}
       </div>
       <div className='bg-green-600 border-4 border-red-600 rounded-full w-full lg:w-3/4 relative flex justify-center items-center'>
@@ -539,7 +535,7 @@ const Board: React.FC = () => {
       </div>
 
 
-      <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center'>
+      <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 text-white p-16 flex flex-col  items-center z-50'>
         
        <div className='flex flex-row gap-2'>
        <button onClick={() => setOpenCards(prev => !prev)} className={`${openCards?`bg-yellow-500`:`bg-white shadow-lg shadow-black`} text-black px-2 py-1 rounded`}>{openCards?`close`:`Cards`}</button>
@@ -562,13 +558,13 @@ const Board: React.FC = () => {
        </div>
       </div>
        {/* <div> */}
-        {(CanJoinNewGame || Winner) &&(
+        {/* {(CanJoinNewGame || Winner) &&(
           <button className='join-new-game-btn'
             onClick={handleJoinNewGame}
           >
             Join New Game
           </button>
-       )}
+       )} */}
        {/* </div> */}
     </div>
   );
