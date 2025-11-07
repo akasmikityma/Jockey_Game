@@ -49,8 +49,16 @@ const Board: React.FC = () => {
       }
   },[])
   useEffect(() => {
-    console.log(Winner.length)
+    console.log(Winner.length);
+    const storedPlayerId = localStorage.getItem("playerId");
+    if(storedPlayerId){
+      setMyPlayerId(storedPlayerId);
+    }
     if (mePlayer) {
+      mePlayer.send(JSON.stringify({
+        type:"getGameState",
+        playerId: storedPlayerId
+      }))
       mePlayer.onmessage = (event) => {
         const message = JSON.parse(event.data);
         switch (message.type) {

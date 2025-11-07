@@ -311,6 +311,21 @@ export class GameManager {
                 }
 
                 switch (type) {
+                    case "getGameState":
+                    const game = this.findGameByPlayerId(playerId);
+                    if (game) {
+                        const currentPlayer = game.getCurrentPlayer();
+                        socket.send(JSON.stringify({
+                            type: "gameStateUpdate",
+                            remainingCards: game.board.leftOutCards,
+                            givenBackCards: game.board.givenBackCards,
+                            validSets: game.board.validSets,
+                            Winner: game.Winner,
+                            currentPlayer: currentPlayer?.playerId,
+                            currentPlayerName: currentPlayer?.name
+                        }));
+                    }
+                    break;
                     case "init_game":
                         console.log("lets handle the init_game case ")
                         this.handleInitGame(socket,name);
@@ -403,6 +418,9 @@ export class GameManager {
         this.broadcastGameState(game); // Optionally broadcast the new game state
     }
 
+    private findGameByPlayerId(playerId: string): Game | undefined {
+        return this.playerToGameMap.get(playerId);
+    }
     //  Reconnection Logic : ----------------
 
     // private handleReconnection(newSocket: WebSocket, playerId: string) {
