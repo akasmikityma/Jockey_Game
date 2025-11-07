@@ -80,6 +80,9 @@ All Clients ← broadcast updated state
  GIF showing player using one or multiple Jockey cards to create valid set
  ![CreateIng Set with Jockey](./Screenshots/SetWithJockey.gif)
 
+ GIF showing A player has Won the game 
+ ![The Winner](./Screenshots/Winner.gif)
+
 ### 🧩 Card Interaction  
 *(GIF showing drag/drop or give-back interaction)*  
 ![Card Interaction](./Screenshots/DragDropShuffle.gif)
