@@ -1,6 +1,6 @@
 # 🃏 Conqueror Jockey
 
-> A **real-time 5-player multiplayer card game** built with **React, TypeScript, WebSockets**, and **Recoil** — featuring smooth animations, synchronized gameplay, and dynamic player perspectives.
+> A **real-time 3-player multiplayer card game** built with **React, TypeScript, WebSockets**, and **Recoil** — featuring smooth animations, synchronized gameplay, and dynamic player perspectives.
 
 🎮 **Live Demo:** [https://conquerorjockey.vercel.app/](https://conquerorjockey.vercel.app/)  
 💻 **Source Code:** [https://github.com/akasmikityma/Jockey_Game](https://github.com/akasmikityma/Jockey_Game)
@@ -10,7 +10,7 @@
 ## 🚀 Overview
 
 Conqueror Jockey is a multiplayer card game designed to test your speed, strategy, and synchronization.  
-It supports **up to 5 players**, all connected in real-time through WebSockets, with seamless updates and animations for every move.
+It supports **3 players**, all connected in real-time through WebSockets, with seamless updates and animations for every move.
 
 Built with modern web technologies, this project focuses on **real-time state management**, **player synchronization**, and **a smooth gameplay experience** in the browser.
 
